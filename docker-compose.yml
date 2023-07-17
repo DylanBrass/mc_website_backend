@@ -1,0 +1,90 @@
+services:
+  api-gateway:
+    build: api-gateway
+    hostname: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - customers-service
+      - orders-service
+  customers-service:
+    # to find the Dockerfile
+    build: customers-service
+    hostname: customers-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      mysql1:
+        condition: service_healthy
+  orders-service:
+    # to find the Dockerfile
+    build: orders-service
+    hostname: orders-service
+    environment:
+      - SPRING_PROFILES_ACTIVE=docker
+    depends_on:
+      - mongodb
+  mysql1:
+    image: mysql:5.7
+    container_name: MySql1
+    ports:
+      - "3307:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpwd
+      - MYSQL_DATABASE=customers-db
+      - MYSQL_USER=user
+      - MYSQL_PASSWORD=pwd
+    # if we want to save data
+    volumes:
+      - ./data/mysql1:/var/lib/mysql1
+      - ./data/init.d:/docker-entrypoint-initdb.d
+    # sending commands to mysql container to see if it works
+    healthcheck:
+      test:
+        [
+            "CMD",
+            "mysqladmin",
+            "ping",
+            "-uuser",
+            "-ppwd",
+            "-h",
+            "localhost",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+  phpmyadmin:
+    image: phpmyadmin:5.2.0
+    container_name: PhpMyAdmin
+    links:
+      - mysql1
+    restart: always
+    ports:
+      - 5013:80
+    environment:
+      - PMA_ARBITRARY=1
+
+  mongodb:
+    image: mongo
+    container_name: mongo_db
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo:/data
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pwd
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=user
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=pwd
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+volumes:
+  mongo: {}
