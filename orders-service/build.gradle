@@ -22,9 +22,14 @@ repositories {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
+	runtimeOnly 'com.h2database:h2'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2'
 	annotationProcessor "org.projectlombok:lombok:${lombokVersion}",
 			"org.projectlombok:lombok-mapstruct-binding:${lombokMapstructBindingVersion}"
+	testImplementation('com.h2database:h2')
+	testImplementation 'de.flapdoodle.embed:de.flapdoodle.embed.mongo.spring30x:4.6.2'
 }
 
 tasks.named('test') {

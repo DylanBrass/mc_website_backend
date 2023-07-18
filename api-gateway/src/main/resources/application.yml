@@ -1,0 +1,33 @@
+# Default Spring Profile
+server:
+  error:
+    include-message: always
+
+logging:
+  level:
+    root: INFO
+    com.example: DEBUG
+app:
+  customers-service:
+    host: localhost
+    port: 7001
+  orders-service:
+    host: localhost
+    port: 7002
+---
+
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+server:
+  port: 8080
+
+app:
+  customers-service:
+    host: customers-service
+    port: 8080
+  orders-service:
+    host: orders-service
+    port: 8080
