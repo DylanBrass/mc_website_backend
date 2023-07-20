@@ -4,6 +4,8 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.gallery.ordersservice.orders-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/com.gallery.ordersservice.orders-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.gallery.ordersservice.orders-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.gallery.ordersservice.orders-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customers-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/customers-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customers-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/customers-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/mc_website_backend.iml" filepath="$PROJECT_DIR$/.idea/mc_website_backend.iml" />
