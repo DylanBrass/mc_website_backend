@@ -4,6 +4,7 @@ import com.mc_website.customersservice.businesslayer.CustomerService;
 import com.mc_website.customersservice.datalayer.Customer;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +16,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:3000")
 public class CustomerController {
     CustomerService customerService;
-    SimpleMailMessage mailSender;
+    MailSender mailSender;
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
@@ -41,20 +42,18 @@ public class CustomerController {
         customerService.deleteCustomer(customerId);
         return ResponseEntity.noContent().build();
     }
-/*
-    @PostMapping("/resetPassword")
-    public ResponseEntity<Void> resetPassword(HttpServletRequest request,
-                                        @RequestParam("email") String email) {
-        CustomerResponseModel customer = customerService.getCustomerByEmail(email);
+//
+//    @PostMapping("/resetPassword")
+//    public ResponseEntity<Void> resetPassword(HttpServletRequest request,
+//                                        @RequestParam("email") String email) {
+//        CustomerResponseModel customer = customerService.getCustomerByEmail(email);
+//
+//        String token = UUID.randomUUID().toString();
+//        customerService.createPasswordResetTokenForUser(customer, token);
+//        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+//                request.getLocale(), token, customer));
+//        return ResponseEntity.ok().build();
+//    }
 
-        String token = UUID.randomUUID().toString();
-        customerService.createPasswordResetTokenForUser(customer, token);
-        mailSender.send(constructResetTokenEmail(getAppUrl(request),
-                request.getLocale(), token, user));
-        return new GenericResponse(
-                messages.getMessage("message.resetPasswordEmail", null,
-                        request.getLocale()));
-    }
 
- */
 }
