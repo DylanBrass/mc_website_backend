@@ -18,6 +18,8 @@ public class Orders {
     @Id
     private String id;
 
+    OrderIdentifier orderIdentifier;
+
     CustomerIdentifier customer;
 
     List<Item> items;

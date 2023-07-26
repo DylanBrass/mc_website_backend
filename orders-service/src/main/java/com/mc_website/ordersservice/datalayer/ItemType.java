@@ -9,5 +9,9 @@ public enum ItemType {
     BOARD_GAME,
     BACK_ISSUE,
     TRADE_PAPERBACK,
+    HARDCOVER,
+    RPG,
+    PLAYMAT,
+    MINI_FIGURINES,
     OTHER
 }
