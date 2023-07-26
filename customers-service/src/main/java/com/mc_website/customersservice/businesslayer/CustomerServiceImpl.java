@@ -8,6 +8,8 @@ import com.mc_website.customersservice.presentationlayer.CustomerRequestModel;
 import com.mc_website.customersservice.presentationlayer.CustomerResponseModel;
 import org.springframework.stereotype.Service;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 
 @Service
@@ -35,7 +37,34 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
-        Customer customer = customerRepository.save(customerRequestMapper.requestModelToEntity(customerRequestModel));
+
+        Customer customerWithPassword = customerRequestMapper.requestModelToEntity(customerRequestModel);
+        try
+        {
+            // Create MessageDigest instance for MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            // Add password bytes to digest
+            md.update(customerRequestModel.getPassword().getBytes());
+
+            // Get the hash's bytes
+            byte[] bytes = md.digest();
+
+            // This bytes[] has bytes in decimal format. Convert it to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            // Get complete hashed password in hex format
+            customerWithPassword.setPassword(sb.toString());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        Customer customer = customerRepository.save(customerWithPassword);
+
         return customerResponseMapper.entityToResponseModel(customer);
     }
 
@@ -49,6 +78,18 @@ public class CustomerServiceImpl implements CustomerService {
         customer.setCustomerIdentifier(existingCustomer.getCustomerIdentifier());
         Customer updatedCustomer = customerRepository.save(customer);
         return customerResponseMapper.entityToResponseModel(updatedCustomer);
+    }
+
+    @Override
+    public CustomerResponseModel getCustomerByEmail(String email) {
+        if(customerRepository.findByEmail(email) == null)
+            throw new RuntimeException("Customer with email: " + email + " does not exist");
+        return customerResponseMapper.entityToResponseModel(customerRepository.findByEmail(email));
+    }
+
+    @Override
+    public void resetPassword() {
+
     }
 
     @Override

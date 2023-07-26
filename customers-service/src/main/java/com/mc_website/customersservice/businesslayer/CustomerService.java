@@ -10,5 +10,8 @@ public interface CustomerService {
     CustomerResponseModel getCustomerById(String customerId);
     CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel);
     CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel customerRequestModel);
+
+    CustomerResponseModel getCustomerByEmail(String email);
+    void resetPassword();
     void deleteCustomer(String customerId);
 }
