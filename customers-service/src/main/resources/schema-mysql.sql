@@ -5,5 +5,6 @@ USE `customers-db`;
         first_name VARCHAR(100),
         last_name VARCHAR(100),
         email VARCHAR(100),
-        phone_number VARCHAR(100)
+        phone_number VARCHAR(100),
+        password VARCHAR(100)
     );

@@ -14,4 +14,5 @@ public class CustomerRequestModel {
     String lastName;
     String email;
     String phoneNumber;
+    String password;
 }

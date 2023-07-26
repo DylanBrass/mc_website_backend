@@ -15,4 +15,5 @@ public class CustomerResponseModel {
     String lastName;
     String email;
     String phoneNumber;
+    String password;
 }
