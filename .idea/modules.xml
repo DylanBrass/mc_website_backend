@@ -8,8 +8,6 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_backend.api-gateway.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_backend.api-gateway.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customers-service/mc_website_backend.customers-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/customers-service/mc_website_backend.customers-service.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customers-service/mc_website_backend.customers-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/customers-service/mc_website_backend.customers-service.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/orders-service/mc_website_backend.orders-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/orders-service/mc_website_backend.orders-service.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/orders-service/mc_website_backend.orders-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/orders-service/mc_website_backend.orders-service.test.iml" />
     </modules>
   </component>
 </project>

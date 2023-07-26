@@ -11,8 +11,8 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok-mapstruct-binding/0.2.0/2f1cf9ced7b720ba4996c942b816669e63f0fa4f/lombok-mapstruct-binding-0.2.0.jar" />
         </processorPath>
         <module name="mc_website_backend.orders-service.main" />
-        <module name="mc_website_backend.customers-service.main" />
-        <module name="mc_website_backend.api-gateway.main" />
+        <module name="com.gallery.apigateway.mc_website_backend.api-gateway.main" />
+        <module name="com.gallery.customersservice.mc_website_backend.customers-service.main" />
       </profile>
       <profile name="Gradle Imported" enabled="true">
         <outputRelativeToContentRoot value="true" />
@@ -21,9 +21,9 @@
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.mapstruct/mapstruct-processor/1.5.3.Final/dce418bedafd71ff8dd2cef15006c0fee788b073/mapstruct-processor-1.5.3.Final.jar" />
           <entry name="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.projectlombok/lombok-mapstruct-binding/0.2.0/2f1cf9ced7b720ba4996c942b816669e63f0fa4f/lombok-mapstruct-binding-0.2.0.jar" />
         </processorPath>
-        <module name="mc_website_backend.customers-service.test" />
+        <module name="com.gallery.apigateway.mc_website_backend.api-gateway.test" />
         <module name="mc_website_backend.orders-service.test" />
-        <module name="mc_website_backend.api-gateway.test" />
+        <module name="com.gallery.customersservice.mc_website_backend.customers-service.test" />
       </profile>
     </annotationProcessing>
   </component>
