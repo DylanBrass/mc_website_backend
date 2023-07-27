@@ -13,8 +13,8 @@ public interface OrderResponseMapper {
 
     @Mapping(expression="java(order.getOrderIdentifier().getOrderId())", target = "orderId")
     @Mapping(expression="java(order.getItems())", target = "items")
-    @Mapping(expression="java(customerResponseModel)", target = "customer")
-    OrderResponseModel entityToResponseModel(Orders order, CustomerResponseModel customerResponseModel);
+    @Mapping(expression="java(order.getCustomer().getCustomerId())", target = "customer")
+    OrderResponseModel entityToResponseModel(Orders order);
 
     List<OrderResponseModel> customerResponseModel(List<Orders> orders);
 }

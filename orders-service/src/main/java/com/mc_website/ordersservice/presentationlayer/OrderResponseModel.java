@@ -15,7 +15,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderResponseModel {
     String orderId;
-    CustomerResponseModel customer;
+    String customer;
     List<Item> items;
     String message;
 }
