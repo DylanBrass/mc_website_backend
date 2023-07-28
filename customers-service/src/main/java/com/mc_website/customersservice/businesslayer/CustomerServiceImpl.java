@@ -2,6 +2,8 @@ package com.mc_website.customersservice.businesslayer;
 
 import com.mc_website.customersservice.datalayer.Customer;
 import com.mc_website.customersservice.datalayer.CustomerRepository;
+import com.mc_website.customersservice.datalayer.PasswordResetToken;
+import com.mc_website.customersservice.datalayer.PasswordTokenRepository;
 import com.mc_website.customersservice.datamapperlayer.CustomerRequestMapper;
 import com.mc_website.customersservice.datamapperlayer.CustomerResponseMapper;
 import com.mc_website.customersservice.presentationlayer.CustomerRequestModel;
@@ -15,6 +17,7 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
+    private PasswordTokenRepository passwordTokenRepository;
     private CustomerResponseMapper customerResponseMapper;
     private CustomerRequestMapper customerRequestMapper;
 
@@ -97,5 +100,11 @@ public class CustomerServiceImpl implements CustomerService {
         if(!customerRepository.existsByCustomerIdentifier_CustomerId(customerId))
             throw new RuntimeException("Customer with id: " + customerId + " does not exist");
         customerRepository.delete(customerRepository.findByCustomerIdentifier_CustomerId(customerId));
+    }
+
+    @Override
+    public void createPasswordResetTokenForUser(CustomerResponseModel customer, String token) {
+        PasswordResetToken myToken = new PasswordResetToken(token, customer);
+        passwordTokenRepository.save(myToken);
     }
 }

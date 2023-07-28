@@ -14,4 +14,6 @@ public interface CustomerService {
     CustomerResponseModel getCustomerByEmail(String email);
     void resetPassword();
     void deleteCustomer(String customerId);
+
+    void createPasswordResetTokenForUser(CustomerResponseModel customer, String token);
 }
