@@ -44,7 +44,7 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/resetPassword")
+    /*@PostMapping("/resetPassword")
     public ResponseEntity<Void> resetPassword(HttpServletRequest request,
                                         @RequestParam("email") String email) {
         CustomerResponseModel customer = customerService.getCustomerByEmail(email);
@@ -54,9 +54,9 @@ public class CustomerController {
         mailSender.send(constructResetTokenEmail(getAppUrl(request),
                 request.getLocale(), token, customer));
         return ResponseEntity.ok().build();
-    }
+    }*/
 
-    private SimpleMailMessage constructResetTokenEmail(
+    /*private SimpleMailMessage constructResetTokenEmail(
             String contextPath, Locale locale, String token, CustomerResponseModel customer) {
         String url = contextPath + "/user/changePassword?token=" + token;
         String message = messages.getMessage("message.resetPassword",
@@ -72,7 +72,7 @@ public class CustomerController {
         email.setTo(customer.getEmail());
         email.setFrom(env.getProperty("support.email"));
         return email;
-    }
+    }*/
 
 
 }
