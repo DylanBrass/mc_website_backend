@@ -1,6 +1,7 @@
 package com.mc_website.apigateway.domainclientlayer.Customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mc_website.apigateway.presentation.Customer.CustomerLoginRequestModel;
 import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
 import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
 import org.springframework.beans.factory.annotation.Value;
@@ -56,6 +57,20 @@ public class CustomerServiceClient {
                 String url = CUSTOMER_SERVICE_BASE_URL + "/email?email=" + email;
                 customerResponseModel = restTemplate
                         .getForObject(url, CustomerResponseModel.class);
+
+            } catch (HttpClientErrorException ex) {
+                throw handleHttpClientException(ex);
+            }
+            return customerResponseModel;
+        }
+
+        public CustomerResponseModel getCustomerByEmailAndPassword(String email, String password) {
+            CustomerResponseModel customerResponseModel;
+            try {
+                String url = CUSTOMER_SERVICE_BASE_URL + "/login";
+                CustomerLoginRequestModel customerLoginRequestModel = new CustomerLoginRequestModel(email, password);
+                customerResponseModel = restTemplate
+                        .postForObject(url, customerLoginRequestModel, CustomerResponseModel.class);
 
             } catch (HttpClientErrorException ex) {
                 throw handleHttpClientException(ex);

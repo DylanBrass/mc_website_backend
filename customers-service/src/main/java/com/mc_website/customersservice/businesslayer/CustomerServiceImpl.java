@@ -91,6 +91,42 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
+    public CustomerResponseModel getCustomerByEmailAndPassword(String email, String password) {
+        Customer customerWithPassword = customerRepository.findByEmail(email);
+        if(customerWithPassword == null)
+            throw new RuntimeException("Customer with email: " + email + " does not exist");
+        // Encrypt the password here
+        try
+        {
+            // Create MessageDigest instance for MD5
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            // Add password bytes to digest
+            md.update(password.getBytes());
+
+            // Get the hash's bytes
+            byte[] bytes = md.digest();
+
+            // This bytes[] has bytes in decimal format. Convert it to hexadecimal format
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            // Get complete hashed password in hex format
+            customerWithPassword.setPassword(sb.toString());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        // Check if the customer exists
+        if(customerRepository.findByEmailAndPassword(email, customerWithPassword.getPassword()) == null)
+            throw new RuntimeException("Customer with email: " + email + " and password: " + customerWithPassword.getPassword() + " does not exist");
+        return customerResponseMapper.entityToResponseModel(customerRepository.findByEmailAndPassword(email, customerWithPassword.getPassword()));
+    }
+
+    @Override
     public void resetPassword() {
 
     }

@@ -34,6 +34,11 @@ public class CustomersServiceImpl implements CustomersService {
     }
 
     @Override
+    public CustomerResponseModel getCustomerByEmailAndPassword(String email, String password) {
+        return customerServiceClient.getCustomerByEmailAndPassword(email, password);
+    }
+
+    @Override
     public CustomerResponseModel getCustomerByEmail(String email) {
         return customerServiceClient.getCustomerByEmail(email);
     }

@@ -41,6 +41,10 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseModel> addCustomer(@RequestBody CustomerRequestModel customerRequestModel){
         return ResponseEntity.ok(customerService.addCustomer(customerRequestModel));
     }
+    @PostMapping("/login")
+    public ResponseEntity<CustomerResponseModel> getCustomerByEmailAndPassword(@RequestBody CustomerLoginRequestModel customerRequestModel){
+        return ResponseEntity.ok(customerService.getCustomerByEmailAndPassword(customerRequestModel.getEmail(), customerRequestModel.getPassword()));
+    }
     @PutMapping("/{customerId}")
     public ResponseEntity<CustomerResponseModel> updateCustomer(@PathVariable String customerId, @RequestBody CustomerRequestModel customerRequestModel){
         return ResponseEntity.ok(customerService.updateCustomer(customerId, customerRequestModel));
