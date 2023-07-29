@@ -12,9 +12,9 @@ import java.util.List;
 public interface OrderResponseMapper {
 
     @Mapping(expression="java(order.getOrderIdentifier().getOrderId())", target = "orderId")
-    @Mapping(expression="java(order.getItems())", target = "items")
     @Mapping(expression="java(order.getCustomer().getCustomerId())", target = "customer")
     OrderResponseModel entityToResponseModel(Orders order);
 
-    List<OrderResponseModel> customerResponseModel(List<Orders> orders);
+    @Mapping(expression="java(order.getItems())", target = "items")
+    List<OrderResponseModel> entitiesResponseModel(List<Orders> orders);
 }

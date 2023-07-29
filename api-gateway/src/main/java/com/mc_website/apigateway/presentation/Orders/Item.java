@@ -1,17 +1,14 @@
-package com.mc_website.ordersservice.datalayer;
+package com.mc_website.apigateway.presentation.Orders;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.mapstruct.EnumMapping;
-
-import java.util.Objects;
+import lombok.NoArgsConstructor;
 
 @Data
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class Item {
     String item;
     ItemType itemType;

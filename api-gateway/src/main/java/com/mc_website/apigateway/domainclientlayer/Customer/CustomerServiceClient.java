@@ -1,8 +1,8 @@
-package com.mc_website.apigateway.domainclientlayer;
+package com.mc_website.apigateway.domainclientlayer.Customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mc_website.apigateway.presentation.CustomerRequestModel;
-import com.mc_website.apigateway.presentation.CustomerResponseModel;
+import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
+import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -15,7 +15,7 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 public class CustomerServiceClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final String GALLERY_SERVICE_BASE_URL;
+    private final String CUSTOMER_SERVICE_BASE_URL;
 
     public CustomerServiceClient(RestTemplate restTemplate,
                                 ObjectMapper objectMapper,
@@ -23,13 +23,13 @@ public class CustomerServiceClient {
                                 @Value("${app.customers-service.port}") String customerServicePort) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.GALLERY_SERVICE_BASE_URL = "http://" + customerServiceHost + ":" + customerServicePort + "/api/v1/customers";
+        this.CUSTOMER_SERVICE_BASE_URL = "http://" + customerServiceHost + ":" + customerServicePort + "/api/v1/customers";
     }
 
     public CustomerResponseModel[] getAllCustomers() {
             CustomerResponseModel[] customerResponseModels;
             try {
-                String url = GALLERY_SERVICE_BASE_URL;
+                String url = CUSTOMER_SERVICE_BASE_URL;
                 customerResponseModels = restTemplate.getForObject(url, CustomerResponseModel[].class);
             } catch (HttpClientErrorException ex) {
                 throw handleHttpClientException(ex);
@@ -40,7 +40,7 @@ public class CustomerServiceClient {
         public CustomerResponseModel getCustomer(String customerId) {
             CustomerResponseModel customerResponseModel;
             try {
-                String url = GALLERY_SERVICE_BASE_URL + "/" + customerId;
+                String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
                 customerResponseModel = restTemplate
                         .getForObject(url, CustomerResponseModel.class);
 
@@ -53,7 +53,7 @@ public class CustomerServiceClient {
         public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
             CustomerResponseModel customerResponseModel;
             try {
-                String url = GALLERY_SERVICE_BASE_URL;
+                String url = CUSTOMER_SERVICE_BASE_URL;
                 customerResponseModel = restTemplate
                         .postForObject(url, customerRequestModel, CustomerResponseModel.class);
 
@@ -66,7 +66,7 @@ public class CustomerServiceClient {
         public CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel customerRequestModel) {
             CustomerResponseModel customerResponseModel;
             try {
-                String url = GALLERY_SERVICE_BASE_URL + "/" + customerId;
+                String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
                 restTemplate
                         .put(url, customerRequestModel);
                 customerResponseModel = getCustomer(customerId);
@@ -79,7 +79,7 @@ public class CustomerServiceClient {
 
         public void deleteCustomer(String customerId) {
             try {
-                String url = GALLERY_SERVICE_BASE_URL + "/" + customerId;
+                String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
                 restTemplate
                         .delete(url);
 

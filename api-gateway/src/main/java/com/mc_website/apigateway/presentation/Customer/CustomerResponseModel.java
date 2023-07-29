@@ -1,4 +1,4 @@
-package com.mc_website.apigateway.presentation;
+package com.mc_website.apigateway.presentation.Customer;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class CustomerRequestModel {
+public class CustomerResponseModel {
+    String customerId;
     String firstName;
     String lastName;
     String email;

@@ -1,10 +1,8 @@
-package com.mc_website.apigateway.presentation;
+package com.mc_website.apigateway.presentation.Customer;
 
-import com.mc_website.apigateway.businesslayer.CustomersService;
+import com.mc_website.apigateway.businesslayer.Customer.CustomersService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/v1/customers")

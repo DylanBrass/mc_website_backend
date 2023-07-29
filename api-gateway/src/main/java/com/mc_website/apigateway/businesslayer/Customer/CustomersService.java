@@ -1,7 +1,7 @@
-package com.mc_website.apigateway.businesslayer;
+package com.mc_website.apigateway.businesslayer.Customer;
 
-import com.mc_website.apigateway.presentation.CustomerRequestModel;
-import com.mc_website.apigateway.presentation.CustomerResponseModel;
+import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
+import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
 
 public interface CustomersService {
     CustomerResponseModel[] getCustomers();

@@ -1,7 +1,7 @@
-package com.mc_website.apigateway.businesslayer;
-import com.mc_website.apigateway.domainclientlayer.CustomerServiceClient;
-import com.mc_website.apigateway.presentation.CustomerRequestModel;
-import com.mc_website.apigateway.presentation.CustomerResponseModel;
+package com.mc_website.apigateway.businesslayer.Customer;
+import com.mc_website.apigateway.domainclientlayer.Customer.CustomerServiceClient;
+import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
+import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
 import org.springframework.stereotype.Service;
 
 @Service
