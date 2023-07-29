@@ -19,6 +19,7 @@ repositories {
 	mavenCentral()
 }
 dependencies {
+	implementation group: 'com.sun.mail', name: 'javax.mail', version: '1.6.2'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'

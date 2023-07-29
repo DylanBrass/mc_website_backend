@@ -5,6 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
@@ -22,7 +23,7 @@ public class OrderController {
     }
 
     @PostMapping("/{customerId}/orders")
-    public ResponseEntity<OrderResponseModel> addOrder(@RequestBody OrderRequestModel orderRequestModel,@PathVariable String customerId){
+    public ResponseEntity<OrderResponseModel> addOrder(@RequestBody OrderRequestModel orderRequestModel,@PathVariable String customerId) throws MessagingException {
         return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(orderRequestModel, customerId));
     }
 

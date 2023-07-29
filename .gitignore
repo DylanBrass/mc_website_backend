@@ -40,3 +40,7 @@ out/
 .idea/compiler.xml
 .idea/compiler.xml
 .idea/modules.xml
+.idea/compiler.xml
+orders-service/src/main/resources/application.properties
+orders-service/src/main/resources/application.properties
+orders-service/src/main/resources/application.properties
