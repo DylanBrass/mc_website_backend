@@ -1,5 +1,6 @@
 package com.mc_website.customersservice.datalayer;
 
+import com.mc_website.customersservice.presentationlayer.CustomerResponseModel;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -30,5 +31,14 @@ public class Customer {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
+    }
+
+    public Customer(CustomerResponseModel customer) {
+        this.customerIdentifier = new CustomerIdentifier();
+        this.firstName = customer.getFirstName();
+        this.lastName = customer.getLastName();
+        this.email = customer.getEmail();
+        this.phoneNumber = customer.getPhoneNumber();
+        this.password = customer.getPassword();
     }
 }

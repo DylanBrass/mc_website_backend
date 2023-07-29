@@ -25,6 +25,10 @@ de:
     mongodb:
       embedded:
         version: 5.0.5
+app:
+  customers-service:
+    host: localhost
+    port: 7001
 ---
 spring:
   config:
@@ -34,4 +38,8 @@ spring:
 spring.data.mongodb.host: mongodb
 spring.data.mongodb.port: 27017
 
+app:
+     customers-service:
+        host: customers-service
+        port: 8080
 server.port: 8080

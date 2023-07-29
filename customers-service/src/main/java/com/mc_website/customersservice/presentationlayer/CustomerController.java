@@ -9,6 +9,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 
 @RestController
@@ -42,18 +43,36 @@ public class CustomerController {
         customerService.deleteCustomer(customerId);
         return ResponseEntity.noContent().build();
     }
-//
-//    @PostMapping("/resetPassword")
-//    public ResponseEntity<Void> resetPassword(HttpServletRequest request,
-//                                        @RequestParam("email") String email) {
-//        CustomerResponseModel customer = customerService.getCustomerByEmail(email);
-//
-//        String token = UUID.randomUUID().toString();
-//        customerService.createPasswordResetTokenForUser(customer, token);
-//        mailSender.send(constructResetTokenEmail(getAppUrl(request),
-//                request.getLocale(), token, customer));
-//        return ResponseEntity.ok().build();
-//    }
+
+    /*@PostMapping("/resetPassword")
+    public ResponseEntity<Void> resetPassword(HttpServletRequest request,
+                                        @RequestParam("email") String email) {
+        CustomerResponseModel customer = customerService.getCustomerByEmail(email);
+
+        String token = UUID.randomUUID().toString();
+        customerService.createPasswordResetTokenForUser(customer, token);
+        mailSender.send(constructResetTokenEmail(getAppUrl(request),
+                request.getLocale(), token, customer));
+        return ResponseEntity.ok().build();
+    }*/
+
+    /*private SimpleMailMessage constructResetTokenEmail(
+            String contextPath, Locale locale, String token, CustomerResponseModel customer) {
+        String url = contextPath + "/user/changePassword?token=" + token;
+        String message = messages.getMessage("message.resetPassword",
+                null, locale);
+        return constructEmail("Reset Password", message + " \r\n" + url, customer);
+    }
+
+    private SimpleMailMessage constructEmail(String subject, String body,
+                                             CustomerResponseModel customer) {
+        SimpleMailMessage email = new SimpleMailMessage();
+        email.setSubject(subject);
+        email.setText(body);
+        email.setTo(customer.getEmail());
+        email.setFrom(env.getProperty("support.email"));
+        return email;
+    }*/
 
 
 }
