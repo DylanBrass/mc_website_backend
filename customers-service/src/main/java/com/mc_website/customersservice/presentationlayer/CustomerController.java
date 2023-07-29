@@ -30,6 +30,13 @@ public class CustomerController {
     public ResponseEntity<CustomerResponseModel> getCustomerById(@PathVariable String customerId){
         return ResponseEntity.ok(customerService.getCustomerById(customerId));
     }
+
+    // Get customer by email
+    @GetMapping("/email")
+    public ResponseEntity<CustomerResponseModel> getCustomerByEmail(@RequestParam("email") String email){
+        return ResponseEntity.ok(customerService.getCustomerByEmail(email));
+    }
+
     @PostMapping()
     public ResponseEntity<CustomerResponseModel> addCustomer(@RequestBody CustomerRequestModel customerRequestModel){
         return ResponseEntity.ok(customerService.addCustomer(customerRequestModel));

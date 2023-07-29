@@ -50,6 +50,19 @@ public class CustomerServiceClient {
             return customerResponseModel;
         }
 
+        public CustomerResponseModel getCustomerByEmail(String email) {
+            CustomerResponseModel customerResponseModel;
+            try {
+                String url = CUSTOMER_SERVICE_BASE_URL + "/email?email=" + email;
+                customerResponseModel = restTemplate
+                        .getForObject(url, CustomerResponseModel.class);
+
+            } catch (HttpClientErrorException ex) {
+                throw handleHttpClientException(ex);
+            }
+            return customerResponseModel;
+        }
+
         public CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel) {
             CustomerResponseModel customerResponseModel;
             try {

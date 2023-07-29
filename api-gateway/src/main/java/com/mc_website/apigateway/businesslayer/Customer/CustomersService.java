@@ -8,5 +8,6 @@ public interface CustomersService {
     CustomerResponseModel getCustomerById(String customerId);
     CustomerResponseModel addCustomer(CustomerRequestModel customerRequestModel);
     CustomerResponseModel updateCustomer(String customerId, CustomerRequestModel customerRequestModel);
+    CustomerResponseModel getCustomerByEmail(String email);
     void deleteCustomer(String customerId);
 }

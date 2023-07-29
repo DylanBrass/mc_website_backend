@@ -34,6 +34,11 @@ public class CustomersServiceImpl implements CustomersService {
     }
 
     @Override
+    public CustomerResponseModel getCustomerByEmail(String email) {
+        return customerServiceClient.getCustomerByEmail(email);
+    }
+
+    @Override
     public void deleteCustomer(String customerId) {
         customerServiceClient.deleteCustomer(customerId);
     }
