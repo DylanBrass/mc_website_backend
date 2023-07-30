@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("api/v1/customers")
 @CrossOrigin(origins = "http://localhost:3000")
+
 public class CustomerController {
     CustomersService customerService;
     public CustomerController(CustomersService customerService) {
