@@ -32,11 +32,11 @@ import java.util.Properties;
 public class OrderServiceImpl implements OrderService {
     private final String username;
     private final String password;
-    private  OrderRequestMapper orderRequestMapper;
-    private  OrderResponseMapper orderResponseMapper;
-    private  OrdersRepository ordersRepository;
+    private final OrderRequestMapper orderRequestMapper;
+    private final OrderResponseMapper orderResponseMapper;
+    private final OrdersRepository ordersRepository;
 
-    private CustomerServiceClient customerServiceClient;
+    private final CustomerServiceClient customerServiceClient;
 
     public OrderServiceImpl(@Value("${spring.mail.username}") String username,@Value("${spring.mail.password}") String password, OrderRequestMapper orderRequestMapper, OrderResponseMapper orderResponseMapper, OrdersRepository ordersRepository, CustomerServiceClient customerServiceClient) {
         this.username = username;
@@ -96,7 +96,6 @@ public class OrderServiceImpl implements OrderService {
 
             Transport.send(message);
 
-            System.out.println("Done");
             return orderResponseMapper.entityToResponseModel(ordersRepository.insert(savedOrder));
 
         } catch (MessagingException e) {
