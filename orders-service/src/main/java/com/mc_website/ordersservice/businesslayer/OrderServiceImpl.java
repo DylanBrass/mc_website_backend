@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
             message.setFrom(new InternetAddress("meanrdorders@gmail.com"));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("grif2004@hotmail.com")
+                    InternetAddress.parse("kehayova.mila@gmail.com") //grif2004@hotmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
             message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+"\nItems : "+ savedOrder.getItems().toString());
