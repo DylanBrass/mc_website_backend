@@ -1,3 +1,0 @@
-insert into customers (customer_id, first_name, last_name, email, phone_number, password) values ('a3b8d425-2b60-4ad7-becc-bedf2ef860bd', 'Marnie', 'Buster', 'marnieb@gmail.com', '403-342-0644', 'passworD123$');
-insert into customers (customer_id, first_name, last_name, email, phone_number, password) values ('a3b8d425-2b60-4ad7-becc-bedf2ef860bc', 'John', 'Doe', 'johnd@gmail.com', '403-342-0644', 'passwoRd124$');
-insert into customers (customer_id, first_name, last_name, email, phone_number, password) values ('a3b8d425-2b60-4ad7-becc-bedf2ef860be', 'Jane', 'Doe', 'janed@gmail.com', '403-342-0644', 'passwD1245$');
