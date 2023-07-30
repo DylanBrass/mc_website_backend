@@ -9,6 +9,9 @@ import java.util.List;
 public interface OrderService {
     OrderResponseModel addOrder(OrderRequestModel orderRequestModel, String customerId) throws MessagingException;
     List<OrderResponseModel> getAllOrders();
-
     List<OrderResponseModel> getAllOrdersForCustomer(String customerId);
+    OrderResponseModel getOrderById(String OrderId);
+    OrderResponseModel updateOrder(OrderRequestModel orderRequestModel,String orderId ,String customerId);
+    void deleteOrder(String orderId);
+
 }

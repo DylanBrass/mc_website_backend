@@ -119,6 +119,21 @@ public class OrderServiceImpl implements OrderService {
         return orderResponseMapper.entitiesResponseModel(ordersRepository.getOrdersByCustomer_CustomerId(customerId));
     }
 
+    @Override
+    public OrderResponseModel getOrderById(String OrderId) {
+        return null;
+    }
+
+    @Override
+    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId, String customerId) {
+        return null;
+    }
+
+    @Override
+    public void deleteOrder(String orderId) {
+
+    }
+
     public static Boolean findByOrderType(String typeStr) {
         boolean found = false;
         for (OrderType type : OrderType.values()) {

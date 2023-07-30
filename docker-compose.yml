@@ -75,6 +75,7 @@ services:
       - 27017:27017
     volumes:
       - mongo:/data
+      - mongodata:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=user
       - MONGO_INITDB_ROOT_PASSWORD=pwd
@@ -90,4 +91,5 @@ services:
       - ME_CONFIG_MONGODB_SERVER=mongodb
 volumes:
   mongo: {}
+  mongodata:
   db_data:
