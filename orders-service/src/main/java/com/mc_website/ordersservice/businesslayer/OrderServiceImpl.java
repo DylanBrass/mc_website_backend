@@ -38,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrdersRepository ordersRepository;
 
     private final CustomerServiceClient customerServiceClient;
-
+    Session session;
     public OrderServiceImpl(@Value("${spring.mail.username}") String username,@Value("${spring.mail.password}") String password, OrderRequestMapper orderRequestMapper, OrderResponseMapper orderResponseMapper, OrdersRepository ordersRepository, CustomerServiceClient customerServiceClient) {
         this.username = username;
         this.password = password;
@@ -46,6 +46,18 @@ public class OrderServiceImpl implements OrderService {
         this.orderResponseMapper = orderResponseMapper;
         this.ordersRepository = ordersRepository;
         this.customerServiceClient = customerServiceClient;
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+        session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
     }
 
     @Override
@@ -69,35 +81,28 @@ public class OrderServiceImpl implements OrderService {
 
         CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(savedOrder.getCustomer().getCustomerId());
 
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
 
 
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+
 
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("meanrdorders@gmail.com"));
+            message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("kehayova.mila@gmail.com") //grif2004@hotmail.com
+                    InternetAddress.parse("grif2004@hotmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
             message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+"\nItems : "+ savedOrder.getItems().toString());
 
-
+            Orders order = ordersRepository.insert(savedOrder);
+            if (order == null){
+                throw new InvalidInputException("Order could not be saved !");
+            }
             Transport.send(message);
 
-            return orderResponseMapper.entityToResponseModel(ordersRepository.insert(savedOrder));
+            return orderResponseMapper.entityToResponseModel(order);
 
         } catch (MessagingException e) {
             e.printStackTrace();
