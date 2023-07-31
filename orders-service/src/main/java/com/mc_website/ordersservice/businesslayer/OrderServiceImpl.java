@@ -12,6 +12,7 @@ import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -61,8 +62,9 @@ public class OrderServiceImpl implements OrderService {
         });
 
 
-        Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel,new CustomerIdentifier(customerId));
+        Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel);
         savedOrder.setOrderIdentifier(new OrderIdentifier());
+        savedOrder.setCustomer(new CustomerIdentifier(customerId));
         List<Item> items = new ArrayList<>();
         items.addAll(orderRequestModel.getItems());
         savedOrder.setItems(items);
@@ -89,7 +91,7 @@ public class OrderServiceImpl implements OrderService {
             message.setFrom(new InternetAddress("meanrdorders@gmail.com"));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("kehayova.mila@gmail.com") //grif2004@hotmail.com
+                    InternetAddress.parse("grif2004@hotmail.com") //grif2004@hotmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
             message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+"\nItems : "+ savedOrder.getItems().toString());
@@ -127,7 +129,13 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId, String customerId) {
-        return null;
+        Orders existingOrder = ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId);
+        Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
+        order.setCustomer(new CustomerIdentifier(customerId));
+        order.setId(existingOrder.getId());
+        order.setOrderIdentifier(existingOrder.getOrderIdentifier());
+        Orders updatedOrders=ordersRepository.insert(order);
+        return orderResponseMapper.entityToResponseModel(updatedOrders);
     }
 
     @Override
