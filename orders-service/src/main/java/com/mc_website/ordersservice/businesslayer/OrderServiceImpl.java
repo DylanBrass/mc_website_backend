@@ -75,8 +75,7 @@ public class OrderServiceImpl implements OrderService {
 
         Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel,new CustomerIdentifier(customerId));
         savedOrder.setOrderIdentifier(new OrderIdentifier());
-        List<Item> items = new ArrayList<>();
-        items.addAll(orderRequestModel.getItems());
+        List<Item> items = new ArrayList<>(orderRequestModel.getItems());
         savedOrder.setItems(items);
 
         CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(savedOrder.getCustomer().getCustomerId());
