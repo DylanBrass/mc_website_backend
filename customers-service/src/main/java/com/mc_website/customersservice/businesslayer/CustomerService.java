@@ -13,8 +13,11 @@ public interface CustomerService {
 
     CustomerResponseModel getCustomerByEmail(String email);
     CustomerResponseModel getCustomerByEmailAndPassword(String email, String password);
-    void resetPassword();
     void deleteCustomer(String customerId);
 
-    void createPasswordResetTokenForUser(CustomerResponseModel customer, String token);
+    void updateResetPasswordToken(String token, String email);
+
+    CustomerResponseModel getByResetPasswordToken(String token);
+
+    void updatePassword(String newPassword, String token);
 }

@@ -2,8 +2,6 @@ package com.mc_website.customersservice.businesslayer;
 
 import com.mc_website.customersservice.datalayer.Customer;
 import com.mc_website.customersservice.datalayer.CustomerRepository;
-import com.mc_website.customersservice.datalayer.PasswordResetToken;
-import com.mc_website.customersservice.datalayer.PasswordTokenRepository;
 import com.mc_website.customersservice.datamapperlayer.CustomerRequestMapper;
 import com.mc_website.customersservice.datamapperlayer.CustomerResponseMapper;
 import com.mc_website.customersservice.presentationlayer.CustomerRequestModel;
@@ -17,7 +15,6 @@ import java.util.List;
 @Service
 public class CustomerServiceImpl implements CustomerService {
     private CustomerRepository customerRepository;
-    private PasswordTokenRepository passwordTokenRepository;
     private CustomerResponseMapper customerResponseMapper;
     private CustomerRequestMapper customerRequestMapper;
 
@@ -126,10 +123,6 @@ public class CustomerServiceImpl implements CustomerService {
         return customerResponseMapper.entityToResponseModel(customerRepository.findByEmailAndPassword(email, customerWithPassword.getPassword()));
     }
 
-    @Override
-    public void resetPassword() {
-
-    }
 
     @Override
     public void deleteCustomer(String customerId) {
@@ -139,8 +132,47 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public void createPasswordResetTokenForUser(CustomerResponseModel customer, String token) {
-        PasswordResetToken myToken = new PasswordResetToken(token, customer);
-        passwordTokenRepository.save(myToken);
+    public void updateResetPasswordToken(String token, String email) {
+        Customer customer = customerRepository.findByEmail(email);
+        if (customer != null) {
+            customer.setReset_password_token(token);
+            customerRepository.save(customer);
+        } else {
+            return;
+        }
     }
+
+    @Override
+    public CustomerResponseModel getByResetPasswordToken(String token) {
+        return customerResponseMapper.entityToResponseModel(customerRepository.findCustomerByReset_password_token(token));
+    }
+
+    @Override
+    public void updatePassword(String newPassword, String token) {
+        try
+        {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+
+            md.update(newPassword.getBytes());
+
+            byte[] bytes = md.digest();
+
+            StringBuilder sb = new StringBuilder();
+            for (int i = 0; i < bytes.length; i++) {
+                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            }
+
+            String encodedPassword = sb.toString();
+            Customer customer = customerRepository.findCustomerByReset_password_token(token);
+            customer.setPassword(encodedPassword);
+
+            customer.setReset_password_token(null);
+            customerRepository.save(customer);
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

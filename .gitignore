@@ -38,4 +38,4 @@ out/
 .idea/compiler.xml
 .idea/modules.xml
 orders-service/src/main/resources/application.properties
-.idea/modules.xml
+customers-service/src/main/resources/application.properties

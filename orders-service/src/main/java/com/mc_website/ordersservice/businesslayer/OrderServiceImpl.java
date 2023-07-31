@@ -12,7 +12,6 @@ import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -39,7 +38,7 @@ public class OrderServiceImpl implements OrderService {
     private final OrdersRepository ordersRepository;
 
     private final CustomerServiceClient customerServiceClient;
-
+    Session session;
     public OrderServiceImpl(@Value("${spring.mail.username}") String username,@Value("${spring.mail.password}") String password, OrderRequestMapper orderRequestMapper, OrderResponseMapper orderResponseMapper, OrdersRepository ordersRepository, CustomerServiceClient customerServiceClient) {
         this.username = username;
         this.password = password;
@@ -47,6 +46,18 @@ public class OrderServiceImpl implements OrderService {
         this.orderResponseMapper = orderResponseMapper;
         this.ordersRepository = ordersRepository;
         this.customerServiceClient = customerServiceClient;
+        Properties prop = new Properties();
+        prop.put("mail.smtp.host", "smtp.gmail.com");
+        prop.put("mail.smtp.port", "587");
+        prop.put("mail.smtp.auth", "true");
+        prop.put("mail.smtp.starttls.enable", "true"); //TLS
+
+        session = Session.getInstance(prop,
+                new javax.mail.Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
     }
 
     @Override
@@ -62,44 +73,35 @@ public class OrderServiceImpl implements OrderService {
         });
 
 
-        Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel);
+        Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel,new CustomerIdentifier(customerId));
         savedOrder.setOrderIdentifier(new OrderIdentifier());
-        savedOrder.setCustomer(new CustomerIdentifier(customerId));
-        List<Item> items = new ArrayList<>();
-        items.addAll(orderRequestModel.getItems());
+        List<Item> items = new ArrayList<>(orderRequestModel.getItems());
         savedOrder.setItems(items);
 
         CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(savedOrder.getCustomer().getCustomerId());
 
-        Properties prop = new Properties();
-        prop.put("mail.smtp.host", "smtp.gmail.com");
-        prop.put("mail.smtp.port", "587");
-        prop.put("mail.smtp.auth", "true");
-        prop.put("mail.smtp.starttls.enable", "true"); //TLS
 
 
-        Session session = Session.getInstance(prop,
-                new javax.mail.Authenticator() {
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(username, password);
-                    }
-                });
+
 
         try {
 
             Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress("meanrdorders@gmail.com"));
+            message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("grif2004@hotmail.com") //grif2004@hotmail.com
+                    InternetAddress.parse("grif2004@hotmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
             message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+"\nItems : "+ savedOrder.getItems().toString());
 
-
+            Orders order = ordersRepository.insert(savedOrder);
+            if (order == null){
+                throw new InvalidInputException("Order could not be saved !");
+            }
             Transport.send(message);
 
-            return orderResponseMapper.entityToResponseModel(ordersRepository.insert(savedOrder));
+            return orderResponseMapper.entityToResponseModel(order);
 
         } catch (MessagingException e) {
             e.printStackTrace();
@@ -129,13 +131,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId, String customerId) {
-        Orders existingOrder = ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId);
-        Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
-        order.setCustomer(new CustomerIdentifier(customerId));
-        order.setId(existingOrder.getId());
-        order.setOrderIdentifier(existingOrder.getOrderIdentifier());
-        Orders updatedOrders=ordersRepository.insert(order);
-        return orderResponseMapper.entityToResponseModel(updatedOrders);
+        return null;
     }
 
     @Override

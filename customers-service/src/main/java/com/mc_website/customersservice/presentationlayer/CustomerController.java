@@ -3,9 +3,11 @@ package com.mc_website.customersservice.presentationlayer;
 import com.mc_website.customersservice.businesslayer.CustomerService;
 import com.mc_website.customersservice.datalayer.Customer;
 import jakarta.servlet.http.HttpServletRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -16,13 +18,14 @@ import java.util.UUID;
 @RequestMapping("api/v1/customers")
 @CrossOrigin(origins = "http://localhost:3000")
 public class CustomerController {
+
     CustomerService customerService;
     MailSender mailSender;
     public CustomerController(CustomerService customerService) {
         this.customerService = customerService;
     }
 
-    @GetMapping
+    @GetMapping()
     public ResponseEntity<List<CustomerResponseModel>> getCustomers(){
         return ResponseEntity.ok(customerService.getCustomers());
     }
@@ -32,7 +35,7 @@ public class CustomerController {
     }
 
     // Get customer by email
-    @GetMapping("/email")
+    @GetMapping("/email")//Why ?????
     public ResponseEntity<CustomerResponseModel> getCustomerByEmail(@RequestParam("email") String email){
         return ResponseEntity.ok(customerService.getCustomerByEmail(email));
     }
@@ -55,35 +58,32 @@ public class CustomerController {
         return ResponseEntity.noContent().build();
     }
 
-    /*@PostMapping("/resetPassword")
-    public ResponseEntity<Void> resetPassword(HttpServletRequest request,
-                                        @RequestParam("email") String email) {
-        CustomerResponseModel customer = customerService.getCustomerByEmail(email);
+    @GetMapping("/forgot_password")
+    public String showForgotPasswordForm() {
+        return null;
 
-        String token = UUID.randomUUID().toString();
-        customerService.createPasswordResetTokenForUser(customer, token);
-        mailSender.send(constructResetTokenEmail(getAppUrl(request),
-                request.getLocale(), token, customer));
-        return ResponseEntity.ok().build();
-    }*/
-
-    /*private SimpleMailMessage constructResetTokenEmail(
-            String contextPath, Locale locale, String token, CustomerResponseModel customer) {
-        String url = contextPath + "/user/changePassword?token=" + token;
-        String message = messages.getMessage("message.resetPassword",
-                null, locale);
-        return constructEmail("Reset Password", message + " \r\n" + url, customer);
     }
 
-    private SimpleMailMessage constructEmail(String subject, String body,
-                                             CustomerResponseModel customer) {
-        SimpleMailMessage email = new SimpleMailMessage();
-        email.setSubject(subject);
-        email.setText(body);
-        email.setTo(customer.getEmail());
-        email.setFrom(env.getProperty("support.email"));
-        return email;
-    }*/
+    @PostMapping("/forgot_password")
+    public String processForgotPassword() {
+        return null;
 
+    }
+
+    public void sendEmail(){
+
+    }
+
+
+    @GetMapping("/reset_password")
+    public String showResetPasswordForm() {
+return null;
+    }
+
+    @PostMapping("/reset_password")
+    public String processResetPassword() {
+        return null;
+
+    }
 
 }
