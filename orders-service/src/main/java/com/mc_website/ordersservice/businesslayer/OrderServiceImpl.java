@@ -78,11 +78,8 @@ public class OrderServiceImpl implements OrderService {
         List<Item> items = new ArrayList<>(orderRequestModel.getItems());
         savedOrder.setItems(items);
 
-        CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(savedOrder.getCustomer().getCustomerId());
-
-
-
-
+        CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(customerId);
+        savedOrder.setCustomer(new CustomerIdentifier(customerResponseModel.getCustomerId()));
 
         try {
 
@@ -107,10 +104,6 @@ public class OrderServiceImpl implements OrderService {
             e.printStackTrace();
             throw new MessagingException(e.getMessage());
         }
-
-
-
-
     }
 
     @Override
