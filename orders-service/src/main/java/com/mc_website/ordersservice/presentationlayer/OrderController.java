@@ -32,4 +32,15 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrdersForCustomer(customerId));
     }
 
+    @DeleteMapping("/orders/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable String orderId){
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<OrderResponseModel> getOrderById(@PathVariable String orderId){
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    }
+
 }

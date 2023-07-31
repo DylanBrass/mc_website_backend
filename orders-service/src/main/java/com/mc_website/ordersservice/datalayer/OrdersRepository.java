@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface OrdersRepository extends MongoRepository<Orders,Integer> {
     List<Orders> getOrdersByCustomer_CustomerId(String customerId);
+
+    Orders getOrOrderByOrderIdentifier_OrderId(String orderId);
 }

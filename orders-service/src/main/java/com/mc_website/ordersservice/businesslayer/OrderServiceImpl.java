@@ -8,6 +8,7 @@ import com.mc_website.ordersservice.presentationlayer.Customer.CustomerResponseM
 import com.mc_website.ordersservice.presentationlayer.OrderRequestModel;
 import com.mc_website.ordersservice.presentationlayer.OrderResponseModel;
 import com.mc_website.ordersservice.utils.exceptions.InvalidInputException;
+import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -120,8 +121,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseModel getOrderById(String OrderId) {
-        return null;
+    public OrderResponseModel getOrderById(String orderId) {
+        return orderResponseMapper.entityToResponseModel(ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId));
     }
 
     @Override
@@ -131,7 +132,11 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public void deleteOrder(String orderId) {
-
+        Orders order = ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId);
+        if (order==null){
+            throw new NotFoundException("No order was found with ID : " + orderId);
+        }
+        ordersRepository.delete(order);
     }
 
     public static Boolean findByOrderType(String typeStr) {
