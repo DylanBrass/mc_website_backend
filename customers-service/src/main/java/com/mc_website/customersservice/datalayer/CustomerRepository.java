@@ -10,6 +10,6 @@ public interface CustomerRepository extends JpaRepository<Customer, Integer> {
     Customer findByEmailAndPassword(String email, String password);
 
     boolean existsByCustomerIdentifier_CustomerId(String customerId);
-    Customer findCustomerByReset_password_token(String reset_password_token);
 
+    Customer findByResetPasswordToken(String token);
 }

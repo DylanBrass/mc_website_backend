@@ -6,5 +6,6 @@ USE `customers-db`;
         last_name VARCHAR(100),
         email VARCHAR(100),
         phone_number VARCHAR(100),
-        password VARCHAR(100)
+        password VARCHAR(100),
+        reset_password_token VARCHAR(100)
     );

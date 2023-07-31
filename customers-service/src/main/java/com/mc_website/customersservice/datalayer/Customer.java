@@ -20,13 +20,14 @@ public class Customer {
     private String phoneNumber;
     private String password;
 
-    private String reset_password_token;
+    @Column(name = "reset_password_token")
+    private String resetPasswordToken;
 
     public Customer(){
         this.customerIdentifier = new CustomerIdentifier();
     }
 
-    public Customer(Integer id, CustomerIdentifier customerIdentifier, String firstName, String lastName, String email, String phoneNumber, String password, String reset_password_token) {
+    public Customer(Integer id, CustomerIdentifier customerIdentifier, String firstName, String lastName, String email, String phoneNumber, String password, String resetPasswordToken) {
         Id = id;
         this.customerIdentifier = customerIdentifier;
         this.firstName = firstName;
@@ -34,7 +35,7 @@ public class Customer {
         this.email = email;
         this.phoneNumber = phoneNumber;
         this.password = password;
-        this.reset_password_token = reset_password_token;
+        this.resetPasswordToken = resetPasswordToken;
     }
 
     public Customer(CustomerResponseModel customer) {

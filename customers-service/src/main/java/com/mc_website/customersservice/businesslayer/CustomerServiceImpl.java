@@ -135,7 +135,7 @@ public class CustomerServiceImpl implements CustomerService {
     public void updateResetPasswordToken(String token, String email) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer != null) {
-            customer.setReset_password_token(token);
+            customer.setResetPasswordToken(token);
             customerRepository.save(customer);
         } else {
             return;
@@ -144,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseModel getByResetPasswordToken(String token) {
-        return customerResponseMapper.entityToResponseModel(customerRepository.findCustomerByReset_password_token(token));
+        return customerResponseMapper.entityToResponseModel(customerRepository.findByResetPasswordToken(token));
     }
 
     @Override
@@ -163,10 +163,10 @@ public class CustomerServiceImpl implements CustomerService {
             }
 
             String encodedPassword = sb.toString();
-            Customer customer = customerRepository.findCustomerByReset_password_token(token);
+            Customer customer = customerRepository.findByResetPasswordToken(token);
             customer.setPassword(encodedPassword);
 
-            customer.setReset_password_token(null);
+            customer.setResetPasswordToken(null);
             customerRepository.save(customer);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
