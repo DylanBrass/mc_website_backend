@@ -144,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerResponseModel getByResetPasswordToken(String token) {
-        return customerResponseMapper.entityToResponseModel(customerRepository.findByResetPasswordToken(token));
+        return customerResponseMapper.entityToResponseModel(customerRepository.findCustomerByResetPasswordToken(token));
     }
 
     @Override
@@ -163,7 +163,7 @@ public class CustomerServiceImpl implements CustomerService {
             }
 
             String encodedPassword = sb.toString();
-            Customer customer = customerRepository.findByResetPasswordToken(token);
+            Customer customer = customerRepository.findCustomerByResetPasswordToken(token);
             customer.setPassword(encodedPassword);
 
             customer.setResetPasswordToken(null);

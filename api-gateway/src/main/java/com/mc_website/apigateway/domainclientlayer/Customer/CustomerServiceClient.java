@@ -1,10 +1,7 @@
 package com.mc_website.apigateway.domainclientlayer.Customer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mc_website.apigateway.presentation.Customer.CustomerLoginRequestModel;
-import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
-import com.mc_website.apigateway.presentation.Customer.CustomerResetPwdRequestModel;
-import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
+import com.mc_website.apigateway.presentation.Customer.*;
 import com.mc_website.apigateway.utils.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +14,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -156,6 +154,38 @@ public class CustomerServiceClient {
         }
         return formPage;
     }
+    public String customerShowResetPage(String token) {
+        String form;
+        try {
+            String url = CUSTOMER_SERVICE_BASE_URL + "/reset_password";
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
+            builder.queryParam("token",token);
+            url = builder.toUriString();
+
+            form = restTemplate
+                    .getForObject(url, String.class);
+
+        } catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+        return form;
+    }
+    public String changePassword(HttpServletRequest request) {
+
+        CustomerResetPwdWithTokenRequestModel customerResetPwdWithTokenRequestModel = CustomerResetPwdWithTokenRequestModel.builder().token(request.getParameter("token")).password(request.getParameter("password")).build();
+
+        String formPage;
+        try {
+            String url = CUSTOMER_SERVICE_BASE_URL+"/reset_password";
+            formPage = restTemplate
+                    .postForObject(url, customerResetPwdWithTokenRequestModel, String.class);
+
+        } catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+        return formPage;
+    }
+
         private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
             if (ex.getStatusCode() == NOT_FOUND) {
                 //return new NotFoundException(ex.getMessage());

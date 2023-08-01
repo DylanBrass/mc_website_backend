@@ -59,4 +59,14 @@ public class CustomersServiceImpl implements CustomersService {
     public String sendEmailForForgottenEmail(HttpServletRequest request) {
         return customerServiceClient.sendForgottenEmail(request);
     }
+
+    @Override
+    public String resetPasswordPage(String token) {
+        return customerServiceClient.customerShowResetPage(token);
+    }
+
+    @Override
+    public String resetPassword(HttpServletRequest request) {
+        return customerServiceClient.changePassword(request);
+    }
 }

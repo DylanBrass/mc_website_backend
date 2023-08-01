@@ -1,9 +1,11 @@
 package com.mc_website.customersservice.presentationlayer;
 
 import com.mc_website.customersservice.businesslayer.CustomerService;
+import com.mc_website.customersservice.datalayer.Customer;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +21,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import java.io.UnsupportedEncodingException;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("api/v1/customers")
@@ -94,14 +93,12 @@ public class CustomerController {
     }
 
     @PostMapping("/forgot_password")
-    public String processForgotPassword(@RequestBody CustomerResetPwdRequestModel customerResetPwdRequestModel) {
-        Model model = new ConcurrentModel();
+    public String processForgotPassword(@RequestBody CustomerResetPwdRequestModel customerResetPwdRequestModel,Model model) {
         String email = customerResetPwdRequestModel.getEmail();
         String token = UUID.randomUUID().toString();
-        log.debug(email);
         try {
             customerService.updateResetPasswordToken(token, email);
-            String resetPasswordLink =  customerResetPwdRequestModel.getUrl()+ "/reset_password?token=" + token;
+            String resetPasswordLink =  customerResetPwdRequestModel.getUrl()+ "/api/v1/customers/reset_password?token=" + token;
             sendEmail(email, resetPasswordLink);
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
 
@@ -128,14 +125,39 @@ public class CustomerController {
 
 
     @GetMapping("/reset_password")
-    public String showResetPasswordForm() {
-return null;
+    public String showResetPasswordForm(@RequestParam Map<String, String> querryParams, Model model) {
+
+        String token = querryParams.get("token");
+
+        CustomerResponseModel customerResponseModel = customerService.getByResetPasswordToken(token);
+        model.addAttribute("token", token);
+
+        if (customerResponseModel == null) {
+            model.addAttribute("message", "Invalid Token");
+            return "message";
+        }
+
+        return "reset_password_form";
+
     }
 
     @PostMapping("/reset_password")
-    public String processResetPassword() {
-        return null;
+    public String processResetPassword(@RequestBody CustomerResetPwdWithTokenRequestModel resetRequest,Model model) {
+        String token = resetRequest.getToken();
+        String password = resetRequest.getPassword();
+        CustomerResponseModel customerResponseModel = customerService.getByResetPasswordToken(token);
+        model.addAttribute("title", "Reset your password");
 
+        if (customerResponseModel == null) {
+            model.addAttribute("message", "Invalid Token");
+            return "message";
+        } else {
+            customerService.updatePassword(password, token);
+
+            model.addAttribute("message", "You have successfully changed your password.");
+        }
+
+        return "message";
     }
 
 }

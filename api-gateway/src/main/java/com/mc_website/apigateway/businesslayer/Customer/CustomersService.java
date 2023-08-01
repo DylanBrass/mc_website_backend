@@ -15,4 +15,8 @@ public interface CustomersService {
     void deleteCustomer(String customerId);
     String customerForgotEmail();
     String sendEmailForForgottenEmail(HttpServletRequest request);
+
+    String resetPasswordPage(String token);
+
+    String resetPassword(HttpServletRequest request);
 }
