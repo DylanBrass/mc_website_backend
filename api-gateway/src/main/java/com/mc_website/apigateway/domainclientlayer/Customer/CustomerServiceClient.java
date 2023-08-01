@@ -3,11 +3,23 @@ package com.mc_website.apigateway.domainclientlayer.Customer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.presentation.Customer.CustomerLoginRequestModel;
 import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
+import com.mc_website.apigateway.presentation.Customer.CustomerResetPwdRequestModel;
 import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
+import com.mc_website.apigateway.utils.Utility;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.Model;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -116,6 +128,34 @@ public class CustomerServiceClient {
             }
         }
 
+    public String customerForgotPassword() {
+        String form;
+        try {
+            String url = CUSTOMER_SERVICE_BASE_URL + "/forgot_password";
+            form = restTemplate
+                    .getForObject(url, String.class);
+
+        } catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+        return form;
+    }
+
+    public String sendForgottenEmail(HttpServletRequest request) {
+
+        CustomerResetPwdRequestModel customerResetPwdRequestModel = CustomerResetPwdRequestModel.builder().email(request.getParameter("email")).url(Utility.getSiteURL(request)).build();
+
+        String formPage;
+        try {
+            String url = CUSTOMER_SERVICE_BASE_URL+"/forgot_password";
+            formPage = restTemplate
+                    .postForObject(url, customerResetPwdRequestModel, String.class);
+
+        } catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+        return formPage;
+    }
         private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
             if (ex.getStatusCode() == NOT_FOUND) {
                 //return new NotFoundException(ex.getMessage());

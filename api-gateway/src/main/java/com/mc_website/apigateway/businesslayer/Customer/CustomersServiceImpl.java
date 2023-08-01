@@ -2,7 +2,9 @@ package com.mc_website.apigateway.businesslayer.Customer;
 import com.mc_website.apigateway.domainclientlayer.Customer.CustomerServiceClient;
 import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
 import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 @Service
 public class CustomersServiceImpl implements CustomersService {
@@ -46,5 +48,15 @@ public class CustomersServiceImpl implements CustomersService {
     @Override
     public void deleteCustomer(String customerId) {
         customerServiceClient.deleteCustomer(customerId);
+    }
+
+    @Override
+    public String customerForgotEmail() {
+        return customerServiceClient.customerForgotPassword();
+    }
+
+    @Override
+    public String sendEmailForForgottenEmail(HttpServletRequest request) {
+        return customerServiceClient.sendForgottenEmail(request);
     }
 }

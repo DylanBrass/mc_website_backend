@@ -1,13 +1,18 @@
 package com.mc_website.apigateway.presentation.Customer;
 
 import com.mc_website.apigateway.businesslayer.Customer.CustomersService;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/v1/customers")
 @CrossOrigin(origins = "http://localhost:3000")
-
+@Slf4j
 public class CustomerController {
     CustomersService customerService;
     public CustomerController(CustomersService customerService) {
@@ -45,5 +50,17 @@ public class CustomerController {
     public ResponseEntity<Void> deleteCustomer(@PathVariable String customerId){
         customerService.deleteCustomer(customerId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/forgot_password")
+    public String showForgotPasswordForm() {
+        return customerService.customerForgotEmail();
+    }
+
+
+    @PostMapping("/forgot_password")
+    public String processForgotPassword(HttpServletRequest request) {
+        return customerService.sendEmailForForgottenEmail(request);
+
     }
 }
