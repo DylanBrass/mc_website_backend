@@ -91,14 +91,14 @@ public class OrderServiceImpl implements OrderService {
                     InternetAddress.parse("denisanhategan@gmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
-            String messageStr = "Customer : "+customerResponseModel.getFirstName() + customerResponseModel.getLastName()+ "Message : "+savedOrder.getMessage() + "\n";
+            String messageStr = "<b>Customer </b>: "+customerResponseModel.getFirstName() + customerResponseModel.getLastName() +"<br><b>Message : </b></br>"+savedOrder.getMessage() + "<br></br>";
             for(int i=0; i< items.size();i++) {
                 messageStr +=
-                        ("\nItems : "+ savedOrder.getItems().get(i).getItem() +
-                                "\nItem Type : " +savedOrder.getItems().get(i).getItemType().toString()+ "\nOrder Type :" + savedOrder.getItems().get(i).getOrderType() +
-                                "\nQuantity :" + savedOrder.getItems().get(i).getQuantity() +"\nDescription: " + savedOrder.getItems().get(i).getDescription());
+                        ("<br><table border ='6'> <tr> <td><b>Items : </b></br>"+ savedOrder.getItems().get(i).getItem() +
+                                "<br><b>Item Type : </b></br>" +savedOrder.getItems().get(i).getItemType().toString()+ "<br><b>Order Type : </b></br>" + savedOrder.getItems().get(i).getOrderType() +
+                                "<br><b>Quantity : </b></br>" + savedOrder.getItems().get(i).getQuantity() +"<br><b>Description: </b></br>" + savedOrder.getItems().get(i).getDescription() + "</td></tr></table><br>") ;
             }
-            message.setText(messageStr);
+            message.setContent("" + messageStr + "","text/html");
             Orders order = ordersRepository.insert(savedOrder);
 
             Transport.send(message);
