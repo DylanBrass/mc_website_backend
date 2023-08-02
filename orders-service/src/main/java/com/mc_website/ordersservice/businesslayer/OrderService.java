@@ -11,7 +11,7 @@ public interface OrderService {
     List<OrderResponseModel> getAllOrders();
     List<OrderResponseModel> getAllOrdersForCustomer(String customerId);
     OrderResponseModel getOrderById(String orderId);
-    OrderResponseModel updateOrder(OrderRequestModel orderRequestModel,String orderId ,String customerId);
+    OrderResponseModel updateOrder(OrderRequestModel orderRequestModel,String orderId);
     void deleteOrder(String orderId);
 
 }

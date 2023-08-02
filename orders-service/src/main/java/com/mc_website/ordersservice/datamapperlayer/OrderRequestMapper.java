@@ -15,6 +15,6 @@ public interface OrderRequestMapper {
             @Mapping(target = "id", ignore = true),
             @Mapping(target = "orderIdentifier", ignore = true),
     })
-    Orders requestModelToEntity(OrderRequestModel orderRequestModel, CustomerIdentifier customerIdentifier);
+    Orders requestModelToEntity(OrderRequestModel orderRequestModel);
 
 }

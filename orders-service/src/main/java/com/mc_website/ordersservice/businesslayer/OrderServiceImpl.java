@@ -73,7 +73,8 @@ public class OrderServiceImpl implements OrderService {
         });
 
 
-        Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel,new CustomerIdentifier(customerId));
+        Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel);
+        savedOrder.setCustomer(new CustomerIdentifier(customerId));
         savedOrder.setOrderIdentifier(new OrderIdentifier());
         List<Item> items = new ArrayList<>(orderRequestModel.getItems());
         savedOrder.setItems(items);
@@ -123,9 +124,14 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId, String customerId) {
-        return null;
-    }
+    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId ) {
+        Orders existingOrder = ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId);
+        Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
+        order.setCustomer(new CustomerIdentifier(existingOrder.getCustomer().getCustomerId()));
+        order.setId(existingOrder.getId());
+        order.setOrderIdentifier(existingOrder.getOrderIdentifier());
+        Orders updatedOrders=ordersRepository.insert(order);
+        return orderResponseMapper.entityToResponseModel(updatedOrders);    }
 
     @Override
     public void deleteOrder(String orderId) {
