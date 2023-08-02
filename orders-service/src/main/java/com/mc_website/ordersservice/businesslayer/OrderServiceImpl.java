@@ -91,14 +91,14 @@ public class OrderServiceImpl implements OrderService {
                     InternetAddress.parse("denisanhategan@gmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
+            String messageStr = "Customer : "+customerResponseModel.getFirstName() + customerResponseModel.getLastName()+ "Message : "+savedOrder.getMessage() + "\n";
             for(int i=0; i< items.size();i++) {
-                message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+
+                messageStr +=
                         ("\nItems : "+ savedOrder.getItems().get(i).getItem() +
-                        "\nItem Type : " +savedOrder.getItems().get(i).getItemType().toString()+ "\nOrder Type :" + savedOrder.getItems().get(i).getOrderType() +
-                        "\nQuantity :" + savedOrder.getItems().get(i).getQuantity() +"\nDescription: " + savedOrder.getItems().get(i).getDescription()));
-
+                                "\nItem Type : " +savedOrder.getItems().get(i).getItemType().toString()+ "\nOrder Type :" + savedOrder.getItems().get(i).getOrderType() +
+                                "\nQuantity :" + savedOrder.getItems().get(i).getQuantity() +"\nDescription: " + savedOrder.getItems().get(i).getDescription());
             }
-
+            message.setText(messageStr);
             Orders order = ordersRepository.insert(savedOrder);
             if (order == null){
                 throw new InvalidInputException("Order could not be saved !");
