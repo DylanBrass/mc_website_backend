@@ -23,6 +23,7 @@ public class Customer {
     @Column(name = "reset_password_token")
     private String resetPasswordToken;
 
+    //add a when the resetPasswordToken was created time to make it expire
     public Customer(){
         this.customerIdentifier = new CustomerIdentifier();
     }

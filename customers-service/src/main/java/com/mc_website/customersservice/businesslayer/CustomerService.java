@@ -20,4 +20,6 @@ public interface CustomerService {
     CustomerResponseModel getByResetPasswordToken(String token);
 
     void updatePassword(String newPassword, String token);
+
+    void resetToken(String customerId);
 }

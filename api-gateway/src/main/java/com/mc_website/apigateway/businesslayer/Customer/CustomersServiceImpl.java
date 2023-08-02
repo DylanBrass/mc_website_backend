@@ -69,4 +69,6 @@ public class CustomersServiceImpl implements CustomersService {
     public String resetPassword(HttpServletRequest request) {
         return customerServiceClient.changePassword(request);
     }
+
+
 }

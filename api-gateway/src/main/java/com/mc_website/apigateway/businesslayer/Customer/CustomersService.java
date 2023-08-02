@@ -19,4 +19,5 @@ public interface CustomersService {
     String resetPasswordPage(String token);
 
     String resetPassword(HttpServletRequest request);
+
 }

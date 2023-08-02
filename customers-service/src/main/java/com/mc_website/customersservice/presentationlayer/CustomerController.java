@@ -4,6 +4,8 @@ import com.mc_website.customersservice.businesslayer.CustomerService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +21,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("api/v1/customers")
@@ -103,7 +108,7 @@ public class CustomerController {
         try {
             customerService.updateResetPasswordToken(token, email);
             String resetPasswordLink =  customerResetPwdRequestModel.getUrl()+ "/api/v1/customers/reset_password?token=" + token;
-            sendEmail(email, resetPasswordLink);
+            sendEmail(email, resetPasswordLink, customerService.getCustomerByEmail(email).customerId);
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
 
         } catch (Exception ex) {
@@ -113,7 +118,7 @@ public class CustomerController {
         return "forgot_password_form";
     }
 
-    public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException {
+    public void sendEmail(String recipientEmail, String link,String customerId) throws MessagingException, UnsupportedEncodingException, InterruptedException {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(
@@ -122,7 +127,6 @@ public class CustomerController {
         );
         message.setSubject("Change Password");
         message.setText("Test : " + link);
-
 
         Transport.send(message);
     }

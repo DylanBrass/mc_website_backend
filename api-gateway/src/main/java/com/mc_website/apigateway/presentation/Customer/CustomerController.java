@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.PasswordAuthentication;
 import java.util.UUID;
 
 @RestController
@@ -69,6 +70,8 @@ public class CustomerController {
     public String showResetPasswordForm(@Param(value = "token") String token) throws IllegalAccessException {
         if(token == null)
             throw new IllegalAccessException("An error as occured");
+
+
         return customerService.resetPasswordPage(token);
 
     }

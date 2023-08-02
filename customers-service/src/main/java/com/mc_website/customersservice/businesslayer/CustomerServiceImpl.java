@@ -175,5 +175,12 @@ public class CustomerServiceImpl implements CustomerService {
 
     }
 
+    @Override
+    public void resetToken(String customerId) {
+        Customer customer = customerRepository.findByCustomerIdentifier_CustomerId(customerId);
+        customer.setResetPasswordToken(null);
+        customerRepository.save(customer);
+    }
+
 
 }
