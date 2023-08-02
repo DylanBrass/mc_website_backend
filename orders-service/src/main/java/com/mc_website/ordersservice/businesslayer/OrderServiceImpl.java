@@ -87,10 +87,16 @@ public class OrderServiceImpl implements OrderService {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("grif2004@hotmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com
+                    InternetAddress.parse("denisanhategan@gmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
-            message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+"\nItems : "+ savedOrder.getItems().toString());
+            for(int i=0; i< items.size();i++) {
+                message.setText("Customer : "+customerResponseModel.getFirstName() + " " + customerResponseModel.getLastName()+ "\nMessage : "+savedOrder.getMessage()+
+                        ("\nItems : "+ savedOrder.getItems().get(i).getItem() +
+                        "\nItem Type : " +savedOrder.getItems().get(i).getItemType().toString()+ "\nOrder Type :" + savedOrder.getItems().get(i).getOrderType() +
+                        "\nQuantity :" + savedOrder.getItems().get(i).getQuantity() +"\nDescription: " + savedOrder.getItems().get(i).getDescription()));
+
+            }
 
             Orders order = ordersRepository.insert(savedOrder);
             if (order == null){
