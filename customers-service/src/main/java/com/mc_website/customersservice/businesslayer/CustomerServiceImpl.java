@@ -14,9 +14,9 @@ import java.util.List;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
-    private CustomerRepository customerRepository;
-    private CustomerResponseMapper customerResponseMapper;
-    private CustomerRequestMapper customerRequestMapper;
+    private final CustomerRepository customerRepository;
+    private final CustomerResponseMapper customerResponseMapper;
+    private final CustomerRequestMapper customerRequestMapper;
 
     public CustomerServiceImpl(CustomerRepository customerRepository, CustomerResponseMapper customerResponseMapper, CustomerRequestMapper customerRequestMapper) {
         this.customerRepository = customerRepository;
@@ -138,7 +138,6 @@ public class CustomerServiceImpl implements CustomerService {
             customer.setResetPasswordToken(token);
             customerRepository.save(customer);
         } else {
-            return;
         }
     }
 

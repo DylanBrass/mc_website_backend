@@ -9,7 +9,7 @@ import org.springframework.ui.Model;
 @Service
 public class CustomersServiceImpl implements CustomersService {
 
-    private CustomerServiceClient customerServiceClient;
+    private final CustomerServiceClient customerServiceClient;
 
     public CustomersServiceImpl(CustomerServiceClient customerServiceClient) {
         this.customerServiceClient = customerServiceClient;

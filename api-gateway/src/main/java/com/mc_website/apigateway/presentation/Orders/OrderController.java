@@ -31,6 +31,21 @@ public class OrderController {
     public ResponseEntity<OrderResponseModel[]> getAllOrdersForCustomer(@PathVariable String customerId){
         return ResponseEntity.ok(orderService.getAllOrdersForCustomer(customerId));
     }
+    @DeleteMapping("/orders/{orderId}")
+    public ResponseEntity<Void> deleteOrder(@PathVariable String orderId){
+        orderService.deleteOrder(orderId);
+        return ResponseEntity.noContent().build();
+    }
 
+    @GetMapping("/orders/{orderId}")
+    public ResponseEntity<OrderResponseModel> getOrderById(@PathVariable String orderId){
+        return ResponseEntity.ok(orderService.getOrderById(orderId));
+    }
+
+    @PutMapping("/orders/{orderId}")
+    public ResponseEntity<OrderResponseModel> updateOrder(@RequestBody OrderRequestModel orderRequestModel, @PathVariable String orderId) {
+        return ResponseEntity.status(HttpStatus.OK).body(orderService.updateOrder(orderRequestModel, orderId));
+
+    }
 
 }

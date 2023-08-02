@@ -29,4 +29,19 @@ public class OrderServiceImpl implements OrderService{
     public OrderResponseModel[] getAllOrdersForCustomer(String customerId) {
         return orderServiceClient.getAllCustomersOrders(customerId);
     }
+
+    @Override
+    public OrderResponseModel getOrderById(String orderId) {
+        return null;
+    }
+
+    @Override
+    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId) {
+        return orderServiceClient.updateOrder(orderRequestModel,orderId);
+    }
+
+    @Override
+    public void deleteOrder(String orderId) {
+
+    }
 }

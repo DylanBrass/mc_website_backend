@@ -44,7 +44,7 @@ public class OrderController {
     }
 
     @PutMapping("/orders/{orderId}")
-    public ResponseEntity<OrderResponseModel> updateOrder(@RequestBody OrderRequestModel orderRequestModel, @PathVariable String orderId){
+    public ResponseEntity<OrderResponseModel> updateOrder(@RequestBody OrderRequestModel orderRequestModel, @PathVariable String orderId) throws MessagingException {
         return ResponseEntity.status(HttpStatus.OK).body(orderService.updateOrder(orderRequestModel, orderId));
 
     }

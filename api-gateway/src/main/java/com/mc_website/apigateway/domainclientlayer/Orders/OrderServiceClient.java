@@ -6,9 +6,13 @@ import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
 import com.mc_website.apigateway.presentation.Orders.OrderRequestModel;
 import com.mc_website.apigateway.presentation.Orders.OrderResponseModel;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
@@ -56,6 +60,20 @@ public class OrderServiceClient {
 
             orderResponseModel = restTemplate
                     .postForObject(url, orderRequestModel, OrderResponseModel.class);
+
+        } catch (HttpClientErrorException ex) {
+            throw handleHttpClientException(ex);
+        }
+        return orderResponseModel;
+    }
+
+    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel,String orderId) {
+        OrderResponseModel orderResponseModel;
+        try {
+            String url = ORDERS_SERVICE_BASE_URL + "/orders/"+orderId;
+
+            HttpEntity<OrderRequestModel> orderRequestModelHttpEntity = new HttpEntity<>(orderRequestModel);
+            orderResponseModel = restTemplate.exchange(url, HttpMethod.PUT,orderRequestModelHttpEntity, OrderResponseModel.class).getBody();
 
         } catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);

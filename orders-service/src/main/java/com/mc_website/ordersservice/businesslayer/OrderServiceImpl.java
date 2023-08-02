@@ -100,9 +100,7 @@ public class OrderServiceImpl implements OrderService {
             }
             message.setText(messageStr);
             Orders order = ordersRepository.insert(savedOrder);
-            if (order == null){
-                throw new InvalidInputException("Order could not be saved !");
-            }
+
             Transport.send(message);
 
             return orderResponseMapper.entityToResponseModel(order);
@@ -126,22 +124,50 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseModel getOrderById(String orderId) {
-        return orderResponseMapper.entityToResponseModel(ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId));
+        return orderResponseMapper.entityToResponseModel(ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId));
     }
 
     @Override
-    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId ) {
-        Orders existingOrder = ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId);
+    public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId ) throws MessagingException {
+        Orders existingOrder = ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId);
         Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
         order.setCustomer(new CustomerIdentifier(existingOrder.getCustomer().getCustomerId()));
         order.setId(existingOrder.getId());
         order.setOrderIdentifier(existingOrder.getOrderIdentifier());
-        Orders updatedOrders=ordersRepository.insert(order);
-        return orderResponseMapper.entityToResponseModel(updatedOrders);    }
+        CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(existingOrder.getCustomer().getCustomerId());
+
+        try {
+
+            Message message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(username));
+            message.setRecipients(
+                    Message.RecipientType.TO,
+                    InternetAddress.parse("denisanhategan@gmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
+            );
+            message.setSubject("Updated order : " + order.getOrderIdentifier().getOrderId());
+            String messageStr = "Customer : "+customerResponseModel.getFirstName() + customerResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
+            for(int i=0; i< order.getItems().size();i++) {
+                messageStr +=
+                        ("\nItems : "+ order.getItems().get(i).getItem() +
+                                "\nItem Type : " +order.getItems().get(i).getItemType().toString()+ "\nOrder Type :" + order.getItems().get(i).getOrderType() +
+                                "\nQuantity :" + order.getItems().get(i).getQuantity() +"\nDescription: " + order.getItems().get(i).getDescription());
+            }
+            message.setText(messageStr);
+            Orders updatedOrder=ordersRepository.save(order);
+
+            Transport.send(message);
+
+            return orderResponseMapper.entityToResponseModel(updatedOrder);
+
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            throw new MessagingException(e.getMessage());
+        }
+    }
 
     @Override
     public void deleteOrder(String orderId) {
-        Orders order = ordersRepository.getOrOrderByOrderIdentifier_OrderId(orderId);
+        Orders order = ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId);
         if (order==null){
             throw new NotFoundException("No order was found with ID : " + orderId);
         }
