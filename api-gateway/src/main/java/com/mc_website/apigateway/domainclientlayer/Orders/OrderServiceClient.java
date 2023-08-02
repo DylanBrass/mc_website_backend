@@ -73,8 +73,8 @@ public class OrderServiceClient {
             String url = ORDERS_SERVICE_BASE_URL + "/orders/"+orderId;
 
             HttpEntity<OrderRequestModel> orderRequestModelHttpEntity = new HttpEntity<>(orderRequestModel);
-            orderResponseModel = restTemplate.exchange(url, HttpMethod.PUT,orderRequestModelHttpEntity, OrderResponseModel.class).getBody();
-
+            orderResponseModel = restTemplate
+                    .exchange(url, HttpMethod.PUT,orderRequestModelHttpEntity, OrderResponseModel.class).getBody();
         } catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);
         }

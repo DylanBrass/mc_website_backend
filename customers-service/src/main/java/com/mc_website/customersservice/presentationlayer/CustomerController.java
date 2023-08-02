@@ -93,6 +93,14 @@ public class CustomerController {
         String email = customerResetPwdRequestModel.getEmail();
         String token = UUID.randomUUID().toString();
         try {
+            customerService.getCustomerByEmail(email);
+        }
+        catch(RuntimeException e){
+        model.addAttribute("message", "This Email is not registered to any account !");
+        return "forgot_password_form";
+    }
+
+        try {
             customerService.updateResetPasswordToken(token, email);
             String resetPasswordLink =  customerResetPwdRequestModel.getUrl()+ "/api/v1/customers/reset_password?token=" + token;
             sendEmail(email, resetPasswordLink);

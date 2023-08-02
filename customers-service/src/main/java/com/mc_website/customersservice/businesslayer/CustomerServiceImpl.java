@@ -76,7 +76,9 @@ public class CustomerServiceImpl implements CustomerService {
             throw new RuntimeException("Customer with id: " + customerId + " does not exist");
         customer.setId(existingCustomer.getId());
         customer.setCustomerIdentifier(existingCustomer.getCustomerIdentifier());
+        customer.setPassword(existingCustomer.getPassword());
         Customer updatedCustomer = customerRepository.save(customer);
+
         return customerResponseMapper.entityToResponseModel(updatedCustomer);
     }
 

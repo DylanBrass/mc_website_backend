@@ -44,6 +44,5 @@ public class Customer {
         this.lastName = customer.getLastName();
         this.email = customer.getEmail();
         this.phoneNumber = customer.getPhoneNumber();
-        this.password = customer.getPassword();
     }
 }

@@ -66,8 +66,9 @@ public class CustomerController {
     }
 
     @GetMapping("/reset_password")
-    public String showResetPasswordForm(@Param(value = "token") String token) {
-
+    public String showResetPasswordForm(@Param(value = "token") String token) throws IllegalAccessException {
+        if(token == null)
+            throw new IllegalAccessException("An error as occured");
         return customerService.resetPasswordPage(token);
 
     }

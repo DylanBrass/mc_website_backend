@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 public interface CustomerRequestMapper {
     @Mapping(target = "customerIdentifier", ignore = true)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "resetPasswordToken", ignore = true)
     Customer requestModelToEntity(CustomerRequestModel customerRequestModel);
 
 }
