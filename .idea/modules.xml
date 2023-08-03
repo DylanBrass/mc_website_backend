@@ -8,6 +8,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/com.gallery.ordersservice.orders-service.test.iml" filepath="$PROJECT_DIR$/.idea/modules/com.gallery.ordersservice.orders-service.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customers-service.iml" filepath="$PROJECT_DIR$/.idea/modules/customers-service.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/customers-service/mc_website_backend.customers-service.main.iml" filepath="$PROJECT_DIR$/.idea/modules/customers-service/mc_website_backend.customers-service.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/mc_website_be.iml" filepath="$PROJECT_DIR$/.idea/modules/mc_website_be.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_be.api-gateway.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_be.api-gateway.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_be.api-gateway.main.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_be.api-gateway.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_be.api-gateway.test.iml" filepath="$PROJECT_DIR$/.idea/modules/api-gateway/mc_website_be.api-gateway.test.iml" />
