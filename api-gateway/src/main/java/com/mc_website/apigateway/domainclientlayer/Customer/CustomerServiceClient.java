@@ -5,9 +5,7 @@ import com.mc_website.apigateway.presentation.Customer.*;
 import com.mc_website.apigateway.utils.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
@@ -105,10 +103,9 @@ public class CustomerServiceClient {
             CustomerResponseModel customerResponseModel;
             try {
                 String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
-                restTemplate
-                        .put(url, customerRequestModel);
-                customerResponseModel = getCustomer(customerId);
-
+                HttpEntity<CustomerRequestModel> customerRequestModelHttpEntity = new HttpEntity<>(customerRequestModel);
+                customerResponseModel = restTemplate
+                        .exchange(url, HttpMethod.PUT, customerRequestModelHttpEntity, CustomerResponseModel.class).getBody();
             } catch (HttpClientErrorException ex) {
                 throw handleHttpClientException(ex);
             }
