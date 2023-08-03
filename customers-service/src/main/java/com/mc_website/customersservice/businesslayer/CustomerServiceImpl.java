@@ -2,6 +2,8 @@ package com.mc_website.customersservice.businesslayer;
 
 import com.mc_website.customersservice.datalayer.Customer;
 import com.mc_website.customersservice.datalayer.CustomerRepository;
+import com.mc_website.customersservice.datalayer.ResetPasswordToken;
+import com.mc_website.customersservice.datalayer.ResetPasswordTokenRepository;
 import com.mc_website.customersservice.datamapperlayer.CustomerRequestMapper;
 import com.mc_website.customersservice.datamapperlayer.CustomerResponseMapper;
 import com.mc_website.customersservice.presentationlayer.CustomerRequestModel;
@@ -10,6 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Date;
+import java.time.chrono.ChronoLocalDate;
+import java.time.temporal.TemporalAccessor;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -17,11 +23,13 @@ public class CustomerServiceImpl implements CustomerService {
     private final CustomerRepository customerRepository;
     private final CustomerResponseMapper customerResponseMapper;
     private final CustomerRequestMapper customerRequestMapper;
+    private final ResetPasswordTokenRepository tokenRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerResponseMapper customerResponseMapper, CustomerRequestMapper customerRequestMapper) {
+    public CustomerServiceImpl(CustomerRepository customerRepository, CustomerResponseMapper customerResponseMapper, CustomerRequestMapper customerRequestMapper, ResetPasswordTokenRepository tokenRepository) {
         this.customerRepository = customerRepository;
         this.customerResponseMapper = customerResponseMapper;
         this.customerRequestMapper = customerRequestMapper;
+        this.tokenRepository = tokenRepository;
     }
     @Override
     public List<CustomerResponseModel> getCustomers() {
@@ -137,21 +145,37 @@ public class CustomerServiceImpl implements CustomerService {
     public void updateResetPasswordToken(String token, String email) {
         Customer customer = customerRepository.findByEmail(email);
         if (customer != null) {
-            customer.setResetPasswordToken(token);
-            customerRepository.save(customer);
+            if(tokenRepository.findResetPasswordTokenByCustomerIdentifier_CustomerId(customer.getCustomerIdentifier().getCustomerId()) != null){
+                tokenRepository.delete(tokenRepository.findResetPasswordTokenByCustomerIdentifier_CustomerId(customer.getCustomerIdentifier().getCustomerId()));
+            }
+            //Hash the tokens
+            ResetPasswordToken resetPasswordToken = new ResetPasswordToken(customer.getCustomerIdentifier().getCustomerId(),token);
+            tokenRepository.save(resetPasswordToken);
         } else {
         }
     }
 
     @Override
     public CustomerResponseModel getByResetPasswordToken(String token) {
-        return customerResponseMapper.entityToResponseModel(customerRepository.findCustomerByResetPasswordToken(token));
-    }
+        ResetPasswordToken resetPasswordToken = tokenRepository.findResetPasswordTokenByToken(token);
+        final Calendar cal = Calendar.getInstance();
+
+        if(resetPasswordToken.getExpiryDate().after(cal.getTime()))
+            return customerResponseMapper.entityToResponseModel(customerRepository.findByCustomerIdentifier_CustomerId(resetPasswordToken.getCustomerIdentifier().getCustomerId()));
+        else
+            throw new IllegalArgumentException("Token is expired (in getByResetPasswordToken()");    }
+
 
     @Override
     public void updatePassword(String newPassword, String token) {
         try
         {
+            final Calendar cal = Calendar.getInstance();
+
+            ResetPasswordToken resetPasswordToken = tokenRepository.findResetPasswordTokenByToken(token);
+            if(resetPasswordToken.getExpiryDate().before(cal.getTime())){
+                throw new IllegalArgumentException("Token expired");
+            }
             MessageDigest md = MessageDigest.getInstance("MD5");
 
             md.update(newPassword.getBytes());
@@ -164,11 +188,11 @@ public class CustomerServiceImpl implements CustomerService {
             }
 
             String encodedPassword = sb.toString();
-            Customer customer = customerRepository.findCustomerByResetPasswordToken(token);
+            Customer customer = customerRepository.findByCustomerIdentifier_CustomerId(resetPasswordToken.getCustomerIdentifier().getCustomerId());
             customer.setPassword(encodedPassword);
 
-            customer.setResetPasswordToken(null);
             customerRepository.save(customer);
+            tokenRepository.delete(resetPasswordToken);
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }

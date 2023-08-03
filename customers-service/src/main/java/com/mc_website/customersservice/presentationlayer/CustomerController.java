@@ -1,9 +1,13 @@
 package com.mc_website.customersservice.presentationlayer;
 
 import com.mc_website.customersservice.businesslayer.CustomerService;
+import com.mc_website.customersservice.datalayer.ResetPasswordToken;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,6 +23,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 @Controller
 @RequestMapping("api/v1/customers")
@@ -113,7 +120,7 @@ public class CustomerController {
         return "forgot_password_form";
     }
 
-    public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException {
+    public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException, InterruptedException {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(
@@ -123,7 +130,6 @@ public class CustomerController {
         message.setSubject("Change Password");
         message.setText("Test : " + link);
 
-
         Transport.send(message);
     }
 
@@ -132,6 +138,7 @@ public class CustomerController {
     public String showResetPasswordForm(@RequestParam Map<String, String> querryParams, Model model) {
 
         String token = querryParams.get("token");
+
 
         CustomerResponseModel customerResponseModel = customerService.getByResetPasswordToken(token);
         model.addAttribute("token", token);
