@@ -1,7 +1,9 @@
 package com.mc_website.customersservice.presentationlayer;
 
 import com.mc_website.customersservice.businesslayer.CustomerService;
+import com.mc_website.customersservice.datalayer.ResetPasswordToken;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.el.parser.Token;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.annotation.Async;
@@ -108,7 +110,7 @@ public class CustomerController {
         try {
             customerService.updateResetPasswordToken(token, email);
             String resetPasswordLink =  customerResetPwdRequestModel.getUrl()+ "/api/v1/customers/reset_password?token=" + token;
-            sendEmail(email, resetPasswordLink, customerService.getCustomerByEmail(email).customerId);
+            sendEmail(email, resetPasswordLink);
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
 
         } catch (Exception ex) {
@@ -118,7 +120,7 @@ public class CustomerController {
         return "forgot_password_form";
     }
 
-    public void sendEmail(String recipientEmail, String link,String customerId) throws MessagingException, UnsupportedEncodingException, InterruptedException {
+    public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException, InterruptedException {
         Message message = new MimeMessage(session);
         message.setFrom(new InternetAddress(username));
         message.setRecipients(
@@ -136,6 +138,7 @@ public class CustomerController {
     public String showResetPasswordForm(@RequestParam Map<String, String> querryParams, Model model) {
 
         String token = querryParams.get("token");
+
 
         CustomerResponseModel customerResponseModel = customerService.getByResetPasswordToken(token);
         model.addAttribute("token", token);

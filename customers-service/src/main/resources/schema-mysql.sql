@@ -6,6 +6,13 @@ USE `customers-db`;
         last_name VARCHAR(100),
         email VARCHAR(100),
         phone_number VARCHAR(100),
-        password VARCHAR(100),
-        reset_password_token VARCHAR(36)
-    );
+        password VARCHAR(100)
+                                         );
+
+
+create table if not exists reset_password_token (
+                                         id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
+                                         token VARCHAR(36),
+                                         customer_id VARCHAR(36) UNIQUE,
+                                         expiry_date DATETIME
+);

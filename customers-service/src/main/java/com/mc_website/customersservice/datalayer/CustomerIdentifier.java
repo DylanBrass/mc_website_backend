@@ -10,6 +10,10 @@ public class CustomerIdentifier {
         this.customerId = java.util.UUID.randomUUID().toString();
     }
 
+    public CustomerIdentifier(String customerId) {
+        this.customerId = customerId;
+    }
+
     public void setCustomerId(String customerId) {
         this.customerId = customerId;
     }
