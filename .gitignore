@@ -41,3 +41,4 @@ orders-service/src/main/resources/application.properties
 customers-service/src/main/resources/application.properties
 customers-service/src/main/resources/application.properties
 customers-service/src/main/resources/application.properties
+*.properties
