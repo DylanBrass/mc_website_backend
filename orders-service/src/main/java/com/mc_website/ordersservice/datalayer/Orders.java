@@ -20,7 +20,7 @@ public class Orders {
 
     OrderIdentifier orderIdentifier;
 
-    CustomerIdentifier customer;
+    UserIdentifier customer;
 
     List<Item> items;
 

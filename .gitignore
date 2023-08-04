@@ -38,5 +38,5 @@ out/
 .idea/compiler.xml
 .idea/modules.xml
 orders-service/src/main/resources/application.properties
-customers-service/src/main/resources/application.properties
+users-service/src/main/resources/application.properties
 *.properties

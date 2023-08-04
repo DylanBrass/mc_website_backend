@@ -3,13 +3,12 @@ package com.mc_website.ordersservice.businesslayer;
 import com.mc_website.ordersservice.datalayer.*;
 import com.mc_website.ordersservice.datamapperlayer.OrderRequestMapper;
 import com.mc_website.ordersservice.datamapperlayer.OrderResponseMapper;
-import com.mc_website.ordersservice.domainclientlayer.CustomerServiceClient;
-import com.mc_website.ordersservice.presentationlayer.Customer.CustomerResponseModel;
+import com.mc_website.ordersservice.domainclientlayer.UserServiceClient;
+import com.mc_website.ordersservice.presentationlayer.Customer.UserResponseModel;
 import com.mc_website.ordersservice.presentationlayer.OrderRequestModel;
 import com.mc_website.ordersservice.presentationlayer.OrderResponseModel;
 import com.mc_website.ordersservice.utils.exceptions.InvalidInputException;
 import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,9 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.Properties;
 
 @Slf4j
 @Service
@@ -38,15 +34,15 @@ public class OrderServiceImpl implements OrderService {
     private final OrderResponseMapper orderResponseMapper;
     private final OrdersRepository ordersRepository;
 
-    private final CustomerServiceClient customerServiceClient;
+    private final UserServiceClient userServiceClient;
     Session session;
-    public OrderServiceImpl(@Value("${spring.mail.username}") String username,@Value("${spring.mail.password}") String password, OrderRequestMapper orderRequestMapper, OrderResponseMapper orderResponseMapper, OrdersRepository ordersRepository, CustomerServiceClient customerServiceClient) {
+    public OrderServiceImpl(@Value("${spring.mail.username}") String username,@Value("${spring.mail.password}") String password, OrderRequestMapper orderRequestMapper, OrderResponseMapper orderResponseMapper, OrdersRepository ordersRepository, UserServiceClient userServiceClient) {
         this.username = username;
         this.password = password;
         this.orderRequestMapper = orderRequestMapper;
         this.orderResponseMapper = orderResponseMapper;
         this.ordersRepository = ordersRepository;
-        this.customerServiceClient = customerServiceClient;
+        this.userServiceClient = userServiceClient;
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
         prop.put("mail.smtp.port", "587");
@@ -75,13 +71,13 @@ public class OrderServiceImpl implements OrderService {
 
 
         Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel);
-        savedOrder.setCustomer(new CustomerIdentifier(customerId));
+        savedOrder.setCustomer(new UserIdentifier(customerId));
         savedOrder.setOrderIdentifier(new OrderIdentifier());
         List<Item> items = new ArrayList<>(orderRequestModel.getItems());
         savedOrder.setItems(items);
 
-        CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(customerId);
-        savedOrder.setCustomer(new CustomerIdentifier(customerResponseModel.getCustomerId()));
+        UserResponseModel userResponseModel = userServiceClient.getCustomer(customerId);
+        savedOrder.setCustomer(new UserIdentifier(userResponseModel.getCustomerId()));
 
         try {
 
@@ -92,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
                     InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
-            String messageStr = "<b>Customer </b>: "+customerResponseModel.getFirstName() + customerResponseModel.getLastName() +"<br><b>Message : </b></br>"+savedOrder.getMessage() + "<br></br>";
+            String messageStr = "<b>Customer </b>: "+ userResponseModel.getFirstName() + userResponseModel.getLastName() +"<br><b>Message : </b></br>"+savedOrder.getMessage() + "<br></br>";
             for(int i=0; i< items.size();i++) {
                 messageStr +=
                         ("<br><table border ='6'> <tr> <td><b>Items : </b></br>"+ savedOrder.getItems().get(i).getItem() +
@@ -132,10 +128,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId ) throws MessagingException {
         Orders existingOrder = ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId);
         Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
-        order.setCustomer(new CustomerIdentifier(existingOrder.getCustomer().getCustomerId()));
+        order.setCustomer(new UserIdentifier(existingOrder.getCustomer().getCustomerId()));
         order.setId(existingOrder.getId());
         order.setOrderIdentifier(existingOrder.getOrderIdentifier());
-        CustomerResponseModel customerResponseModel = customerServiceClient.getCustomer(existingOrder.getCustomer().getCustomerId());
+        UserResponseModel userResponseModel = userServiceClient.getCustomer(existingOrder.getCustomer().getCustomerId());
 
         try {
 
@@ -146,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
                     InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("Updated order : " + order.getOrderIdentifier().getOrderId());
-            String messageStr = "Customer : "+customerResponseModel.getFirstName() + customerResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
+            String messageStr = "Customer : "+ userResponseModel.getFirstName() + userResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
             for(int i=0; i< order.getItems().size();i++) {
                 messageStr +=
                         ("\nItems : "+ order.getItems().get(i).getItem() +

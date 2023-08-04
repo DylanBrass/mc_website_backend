@@ -1,6 +1,5 @@
 package com.mc_website.ordersservice.datamapperlayer;
 
-import com.mc_website.ordersservice.datalayer.CustomerIdentifier;
 import com.mc_website.ordersservice.datalayer.Orders;
 import com.mc_website.ordersservice.presentationlayer.OrderRequestModel;
 import org.mapstruct.Mapper;

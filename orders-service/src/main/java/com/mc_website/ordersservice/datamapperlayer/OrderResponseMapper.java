@@ -1,7 +1,6 @@
 package com.mc_website.ordersservice.datamapperlayer;
 
 import com.mc_website.ordersservice.datalayer.Orders;
-import com.mc_website.ordersservice.presentationlayer.Customer.CustomerResponseModel;
 import com.mc_website.ordersservice.presentationlayer.OrderResponseModel;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

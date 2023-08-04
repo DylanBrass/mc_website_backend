@@ -8,7 +8,7 @@ logging:
     root: INFO
     com.example: DEBUG
 app:
-  customers-service:
+  users-service:
     host: localhost
     port: 7001
   orders-service:
@@ -25,8 +25,8 @@ server:
   port: 8080
 
 app:
-  customers-service:
-    host: customers-service
+  users-service:
+    host: users-service
     port: 8080
   orders-service:
     host: orders-service

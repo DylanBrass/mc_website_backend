@@ -7,12 +7,12 @@ services:
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
-      - customers-service
+      - users-service
       - orders-service
-  customers-service:
+  users-service:
     # to find the Dockerfile
-    build: customers-service
-    hostname: customers-service
+    build: users-service
+    hostname: users-service
     environment:
       - SPRING_PROFILES_ACTIVE=docker
     depends_on:
@@ -33,7 +33,7 @@ services:
       - "3307:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=rootpwd
-      - MYSQL_DATABASE=customers-db
+      - MYSQL_DATABASE=users-db
       - MYSQL_USER=user
       - MYSQL_PASSWORD=pwd
     # if we want to save data

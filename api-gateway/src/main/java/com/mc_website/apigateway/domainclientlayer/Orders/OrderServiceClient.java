@@ -1,8 +1,6 @@
 package com.mc_website.apigateway.domainclientlayer.Orders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mc_website.apigateway.presentation.Customer.CustomerRequestModel;
-import com.mc_website.apigateway.presentation.Customer.CustomerResponseModel;
 import com.mc_website.apigateway.presentation.Orders.OrderRequestModel;
 import com.mc_website.apigateway.presentation.Orders.OrderResponseModel;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +9,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
 
 import static org.springframework.http.HttpStatus.NOT_FOUND;
 import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
