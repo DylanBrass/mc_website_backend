@@ -29,7 +29,7 @@ public class ResetPasswordToken {
         this.token = token;
         Calendar date = Calendar.getInstance();
         long timeInSecs = date.getTimeInMillis();
-        Date expiryDate = new Date(timeInSecs + (5 * 60 * 1000));
+        Date expiryDate = new Date(timeInSecs + (15 * 60 * 1000));
         this.expiryDate = expiryDate;
     }
 

@@ -31,6 +31,7 @@ import java.util.Properties;
 @Slf4j
 @Service
 public class OrderServiceImpl implements OrderService {
+    private final String storeEmail = "grif2004@hotmail.com";
     private final String username;
     private final String password;
     private final OrderRequestMapper orderRequestMapper;
@@ -88,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("denisanhategan@gmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
+                    InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
             String messageStr = "<b>Customer </b>: "+customerResponseModel.getFirstName() + customerResponseModel.getLastName() +"<br><b>Message : </b></br>"+savedOrder.getMessage() + "<br></br>";
@@ -142,7 +143,7 @@ public class OrderServiceImpl implements OrderService {
             message.setFrom(new InternetAddress(username));
             message.setRecipients(
                     Message.RecipientType.TO,
-                    InternetAddress.parse("denisanhategan@gmail.com") //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
+                    InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("Updated order : " + order.getOrderIdentifier().getOrderId());
             String messageStr = "Customer : "+customerResponseModel.getFirstName() + customerResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
