@@ -4,7 +4,7 @@ USE `users-db`;
                                             user_id VARCHAR(36),
         first_name VARCHAR(100),
         last_name VARCHAR(100),
-        email VARCHAR(100),
+        email VARCHAR(100) UNIQUE ,
         phone_number VARCHAR(100),
         password VARCHAR(100)
                                          );
