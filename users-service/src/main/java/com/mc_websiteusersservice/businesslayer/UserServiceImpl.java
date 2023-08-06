@@ -8,6 +8,8 @@ import com.mc_websiteusersservice.datamapperlayer.UserRequestMapper;
 import com.mc_websiteusersservice.datamapperlayer.UserResponseMapper;
 import com.mc_websiteusersservice.presentationlayer.UserRequestModel;
 import com.mc_websiteusersservice.presentationlayer.UserResponseModel;
+import com.mc_websiteusersservice.utils.exceptions.ExistingUserNotFoundException;
+import com.mc_websiteusersservice.utils.exceptions.UserAlreadyExistsException;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
@@ -35,14 +37,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseModel getUserById(String userId) {
+        // Check if the user exists
         if(!userRepository.existsByUserIdentifier_UserId(userId))
-            throw new RuntimeException("user with id: " + userId + " does not exist");
+            throw new ExistingUserNotFoundException("User with id " + userId + " not found.");
+
         return userResponseMapper.entityToResponseModel(userRepository.findUserByUserIdentifier_UserId(userId));
     }
 
     @Override
     public UserResponseModel addUser(UserRequestModel userRequestModel) {
-
+        // Check if the user exists
+        if(userRepository.existsByEmail(userRequestModel.getEmail()))
+            throw new UserAlreadyExistsException("User with email " + userRequestModel.getEmail() + " already exists.");
         User userWithPassword = userRequestMapper.requestModelToEntity(userRequestModel);
         try
         {
@@ -77,8 +83,9 @@ public class UserServiceImpl implements UserService {
     public UserResponseModel updateUser(String userId, UserRequestModel userRequestModel) {
         User user = userRequestMapper.requestModelToEntity(userRequestModel);
         User existingUser = userRepository.findUserByUserIdentifier_UserId(userId);
+        // Check if the user exists
         if(!userRepository.existsByUserIdentifier_UserId(userId))
-            throw new RuntimeException("user with id: " + userId + " does not exist");
+            throw new ExistingUserNotFoundException("User with id " + userId + " not found.");
         user.setId(existingUser.getId());
         user.setUserIdentifier(existingUser.getUserIdentifier());
         user.setPassword(existingUser.getPassword());
@@ -89,8 +96,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseModel getUserByEmail(String email) {
+        // Check if the user exists
         if(userRepository.findByEmail(email) == null)
-            throw new RuntimeException("user with email: " + email + " does not exist");
+            throw new ExistingUserNotFoundException("User with email " + email + " does not exist.");
         return userResponseMapper.entityToResponseModel(userRepository.findByEmail(email));
     }
 
@@ -98,7 +106,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseModel getUserByEmailAndPassword(String email, String password) {
         User userWithPassword = userRepository.findByEmail(email);
         if(userWithPassword == null)
-            throw new RuntimeException("user with email: " + email + " does not exist");
+            throw new ExistingUserNotFoundException("User with email " + email + " does not exist.");
         // Encrypt the password here
         try
         {
@@ -126,7 +134,7 @@ public class UserServiceImpl implements UserService {
 
         // Check if the user exists
         if(userRepository.findByEmailAndPassword(email, userWithPassword.getPassword()) == null)
-            throw new RuntimeException("user with email: " + email + " and password: " + userWithPassword.getPassword() + " does not exist");
+            throw new ExistingUserNotFoundException("Email or password is incorrect.");
         return userResponseMapper.entityToResponseModel(userRepository.findByEmailAndPassword(email, userWithPassword.getPassword()));
     }
 
@@ -134,7 +142,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(String userId) {
         if(!userRepository.existsByUserIdentifier_UserId(userId))
-            throw new RuntimeException("user with id: " + userId + " does not exist");
+            throw new ExistingUserNotFoundException("User with id " + userId + " not found.");
         userRepository.delete(userRepository.findUserByUserIdentifier_UserId(userId));
     }
 
