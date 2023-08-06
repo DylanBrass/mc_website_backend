@@ -1,3 +1,4 @@
 include 'api-gateway'
 include 'users-service'
 include 'orders-service'
+include 'eureka-service'
