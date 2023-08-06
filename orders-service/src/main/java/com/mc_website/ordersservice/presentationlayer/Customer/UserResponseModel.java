@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class UserResponseModel {
-    String customerId;
+    String userId;
     String firstName;
     String lastName;
     String email;
