@@ -25,9 +25,9 @@ server:
   port: 8080
 
 app:
-  users-service:
-    host: users-service
-    port: 8080
-  orders-service:
-    host: orders-service
-    port: 8080
+    users-service:
+        host: users-service
+        port: 8080
+    orders-service:
+        host: orders-service
+        port: 8080

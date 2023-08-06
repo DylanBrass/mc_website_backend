@@ -1,7 +1,6 @@
 package com.mc_website.ordersservice.utils;
 
-import com.mc_website.ordersservice.utils.exceptions.InvalidInputException;
-import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
+import com.mc_website.ordersservice.utils.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -17,14 +16,18 @@ import static org.springframework.http.HttpStatus.*;
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
 
-
-
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(NotFoundException.class)
     public HttpErrorInfo handleNotFoundException(WebRequest request, Exception ex) {
-
         return createHttpErrorInfo(NOT_FOUND, request, ex);
     }
+
+    @ResponseStatus(NOT_FOUND)
+    @ExceptionHandler(ExistingOrderNotFoundException.class)
+    public HttpErrorInfo handleExistingOrderNotFoundException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(NOT_FOUND, request, ex);
+    }
+
 
     @ResponseStatus(UNPROCESSABLE_ENTITY)
     @ExceptionHandler(InvalidInputException.class)
@@ -32,8 +35,17 @@ public class GlobalControllerExceptionHandler {
         return createHttpErrorInfo(UNPROCESSABLE_ENTITY, request, ex);
     }
 
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(InvalidItemTypeException.class)
+    public HttpErrorInfo handleInvalidItemTypeException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(BAD_REQUEST, request, ex);
+    }
 
-
+    @ResponseStatus(BAD_REQUEST)
+    @ExceptionHandler(InvalidOrderTypeException.class)
+    public HttpErrorInfo handleInvalidOrderTypeException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(BAD_REQUEST, request, ex);
+    }
 
     private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, WebRequest request, Exception ex) {
         final String path = request.getDescription(false);
