@@ -16,8 +16,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public OrderResponseModel addOrder(OrderRequestModel orderRequestModel,String customerId) {
-        return orderServiceClient.addOrder(orderRequestModel,customerId);
+    public OrderResponseModel addOrder(OrderRequestModel orderRequestModel,String userId) {
+        return orderServiceClient.addOrder(orderRequestModel,userId);
     }
 
     @Override
@@ -26,8 +26,8 @@ public class OrderServiceImpl implements OrderService{
     }
 
     @Override
-    public OrderResponseModel[] getAllOrdersForCustomer(String customerId) {
-        return orderServiceClient.getAllCustomersOrders(customerId);
+    public OrderResponseModel[] getAllOrdersForUser(String userId) {
+        return orderServiceClient.getAllUsersOrders(userId);
     }
 
     @Override

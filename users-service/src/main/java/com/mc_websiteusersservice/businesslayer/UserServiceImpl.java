@@ -34,10 +34,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseModel getUserById(String customerId) {
-        if(!userRepository.existsByUserIdentifier_UserId(customerId))
-            throw new RuntimeException("Customer with id: " + customerId + " does not exist");
-        return userResponseMapper.entityToResponseModel(userRepository.findUserByUserIdentifier_UserId(customerId));
+    public UserResponseModel getUserById(String userId) {
+        if(!userRepository.existsByUserIdentifier_UserId(userId))
+            throw new RuntimeException("user with id: " + userId + " does not exist");
+        return userResponseMapper.entityToResponseModel(userRepository.findUserByUserIdentifier_UserId(userId));
     }
 
     @Override
@@ -74,11 +74,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseModel updateUser(String customerId, UserRequestModel userRequestModel) {
+    public UserResponseModel updateUser(String userId, UserRequestModel userRequestModel) {
         User user = userRequestMapper.requestModelToEntity(userRequestModel);
-        User existingUser = userRepository.findUserByUserIdentifier_UserId(customerId);
-        if(!userRepository.existsByUserIdentifier_UserId(customerId))
-            throw new RuntimeException("Customer with id: " + customerId + " does not exist");
+        User existingUser = userRepository.findUserByUserIdentifier_UserId(userId);
+        if(!userRepository.existsByUserIdentifier_UserId(userId))
+            throw new RuntimeException("user with id: " + userId + " does not exist");
         user.setId(existingUser.getId());
         user.setUserIdentifier(existingUser.getUserIdentifier());
         user.setPassword(existingUser.getPassword());
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserResponseModel getUserByEmail(String email) {
         if(userRepository.findByEmail(email) == null)
-            throw new RuntimeException("Customer with email: " + email + " does not exist");
+            throw new RuntimeException("user with email: " + email + " does not exist");
         return userResponseMapper.entityToResponseModel(userRepository.findByEmail(email));
     }
 
@@ -98,7 +98,7 @@ public class UserServiceImpl implements UserService {
     public UserResponseModel getUserByEmailAndPassword(String email, String password) {
         User userWithPassword = userRepository.findByEmail(email);
         if(userWithPassword == null)
-            throw new RuntimeException("Customer with email: " + email + " does not exist");
+            throw new RuntimeException("user with email: " + email + " does not exist");
         // Encrypt the password here
         try
         {
@@ -124,18 +124,18 @@ public class UserServiceImpl implements UserService {
             return null;
         }
 
-        // Check if the customer exists
+        // Check if the user exists
         if(userRepository.findByEmailAndPassword(email, userWithPassword.getPassword()) == null)
-            throw new RuntimeException("Customer with email: " + email + " and password: " + userWithPassword.getPassword() + " does not exist");
+            throw new RuntimeException("user with email: " + email + " and password: " + userWithPassword.getPassword() + " does not exist");
         return userResponseMapper.entityToResponseModel(userRepository.findByEmailAndPassword(email, userWithPassword.getPassword()));
     }
 
 
     @Override
-    public void deleteUser(String customerId) {
-        if(!userRepository.existsByUserIdentifier_UserId(customerId))
-            throw new RuntimeException("Customer with id: " + customerId + " does not exist");
-        userRepository.delete(userRepository.findUserByUserIdentifier_UserId(customerId));
+    public void deleteUser(String userId) {
+        if(!userRepository.existsByUserIdentifier_UserId(userId))
+            throw new RuntimeException("user with id: " + userId + " does not exist");
+        userRepository.delete(userRepository.findUserByUserIdentifier_UserId(userId));
     }
 
     @Override

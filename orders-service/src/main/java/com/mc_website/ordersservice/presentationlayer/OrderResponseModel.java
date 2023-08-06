@@ -13,7 +13,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class OrderResponseModel {
     String orderId;
-    String customer;
+    String user;
     List<Item> items;
     String message;
 }

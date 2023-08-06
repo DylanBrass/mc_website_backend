@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/customers")
+@RequestMapping("api/v1/users")
 @CrossOrigin(origins = "http://localhost:3000")
 public class OrderController {
     OrderService orderService;
@@ -22,14 +22,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @PostMapping("/{customerId}/orders")
-    public ResponseEntity<OrderResponseModel> addOrder(@RequestBody OrderRequestModel orderRequestModel, @PathVariable String customerId){
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(orderRequestModel,customerId));
+    @PostMapping("/{userId}/orders")
+    public ResponseEntity<OrderResponseModel> addOrder(@RequestBody OrderRequestModel orderRequestModel, @PathVariable String userId){
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(orderRequestModel,userId));
     }
 
-    @GetMapping("/{customerId}/orders")
-    public ResponseEntity<OrderResponseModel[]> getAllOrdersForCustomer(@PathVariable String customerId){
-        return ResponseEntity.ok(orderService.getAllOrdersForCustomer(customerId));
+    @GetMapping("/{userId}/orders")
+    public ResponseEntity<OrderResponseModel[]> getAllOrdersForUser(@PathVariable String userId){
+        return ResponseEntity.ok(orderService.getAllOrdersForUser(userId));
     }
     @DeleteMapping("/orders/{orderId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable String orderId){

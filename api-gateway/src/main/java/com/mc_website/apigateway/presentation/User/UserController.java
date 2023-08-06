@@ -8,57 +8,57 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/v1/customers")
+@RequestMapping("api/v1/users")
 @CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
 public class UserController {
-    UsersService customerService;
-    public UserController(UsersService customerService) {
-        this.customerService = customerService;
+    UsersService userService;
+    public UserController(UsersService userService) {
+        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<UserResponseModel[]> getCustomers(){
-        return ResponseEntity.ok(customerService.getUsers());
+    public ResponseEntity<UserResponseModel[]> getAllUsers(){
+        return ResponseEntity.ok(userService.getUsers());
     }
     @GetMapping("/{userId}")
-    public ResponseEntity<UserResponseModel> getCustomerById(@PathVariable String userId){
-        return ResponseEntity.ok(customerService.getUserById(userId));
+    public ResponseEntity<UserResponseModel> getUserById(@PathVariable String userId){
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
     @GetMapping("/email")
-    public ResponseEntity<UserResponseModel> getCustomerByEmail(@RequestParam("email") String email){
-        return ResponseEntity.ok(customerService.getUserByEmail(email));
+    public ResponseEntity<UserResponseModel> getUserByEmail(@RequestParam("email") String email){
+        return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
     @PostMapping()
-    public ResponseEntity<UserResponseModel> addCustomer(@RequestBody UserRequestModel userRequestModel){
-        return ResponseEntity.ok(customerService.addUser(userRequestModel));
+    public ResponseEntity<UserResponseModel> addUser(@RequestBody UserRequestModel userRequestModel){
+        return ResponseEntity.ok(userService.addUser(userRequestModel));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseModel> loginCustomer(@RequestBody UserRequestModel userRequestModel){
-        return ResponseEntity.ok(customerService.getUserByEmailAndPassword(userRequestModel.getEmail(), userRequestModel.getPassword()));
+    public ResponseEntity<UserResponseModel> loginUser(@RequestBody UserRequestModel userRequestModel){
+        return ResponseEntity.ok(userService.getUserByEmailAndPassword(userRequestModel.getEmail(), userRequestModel.getPassword()));
     }
     @PutMapping("/{userId}")
-    public ResponseEntity<UserResponseModel> updateCustomer(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel){
-        return ResponseEntity.ok(customerService.updateUser(userId, userRequestModel));
+    public ResponseEntity<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel){
+        return ResponseEntity.ok(userService.updateUser(userId, userRequestModel));
     }
     @DeleteMapping("/{userId}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable String userId){
-        customerService.deleteUser(userId);
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId){
+        userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/forgot_password")
     public String showForgotPasswordForm() {
-        return customerService.userForgotEmail();
+        return userService.userForgotEmail();
     }
 
 
     @PostMapping("/forgot_password")
     public String processForgotPassword(HttpServletRequest request) {
-        return customerService.sendEmailForForgottenEmail(request);
+        return userService.sendEmailForForgottenEmail(request);
 
     }
 
@@ -68,13 +68,13 @@ public class UserController {
             throw new IllegalAccessException("An error as occured");
 
 
-        return customerService.resetPasswordPage(token);
+        return userService.resetPasswordPage(token);
 
     }
 
     @PostMapping("/reset_password")
     public String processResetPassword(HttpServletRequest resetRequest) {
-        return customerService.resetPassword(resetRequest);
+        return userService.resetPassword(resetRequest);
     }
 
 }

@@ -16,42 +16,42 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public UserResponseModel[] getUsers() {
-        return userServiceClient.getAllCustomers();
+        return userServiceClient.getAllUsers();
     }
 
     @Override
     public UserResponseModel getUserById(String userId) {
-        return userServiceClient.getCustomer(userId);
+        return userServiceClient.getUser(userId);
     }
 
     @Override
     public UserResponseModel addUser(UserRequestModel userRequestModel) {
-        return userServiceClient.addCustomer(userRequestModel);
+        return userServiceClient.addUser(userRequestModel);
     }
 
     @Override
     public UserResponseModel updateUser(String userId, UserRequestModel userRequestModel) {
-        return userServiceClient.updateCustomer(userId, userRequestModel);
+        return userServiceClient.updateUser(userId, userRequestModel);
     }
 
     @Override
     public UserResponseModel getUserByEmailAndPassword(String email, String password) {
-        return userServiceClient.getCustomerByEmailAndPassword(email, password);
+        return userServiceClient.getUserByEmailAndPassword(email, password);
     }
 
     @Override
     public UserResponseModel getUserByEmail(String email) {
-        return userServiceClient.getCustomerByEmail(email);
+        return userServiceClient.getUserByEmail(email);
     }
 
     @Override
     public void deleteUser(String userId) {
-        userServiceClient.deleteCustomer(userId);
+        userServiceClient.deleteUser(userId);
     }
 
     @Override
     public String userForgotEmail() {
-        return userServiceClient.customerForgotPassword();
+        return userServiceClient.userForgotPassword();
     }
 
     @Override
@@ -61,7 +61,7 @@ public class UsersServiceImpl implements UsersService {
 
     @Override
     public String resetPasswordPage(String token) {
-        return userServiceClient.customerShowResetPage(token);
+        return userServiceClient.userShowResetPage(token);
     }
 
     @Override

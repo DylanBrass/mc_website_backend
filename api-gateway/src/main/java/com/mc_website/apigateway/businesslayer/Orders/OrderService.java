@@ -6,10 +6,10 @@ import com.mc_website.apigateway.presentation.Orders.OrderResponseModel;
 
 
 public interface OrderService {
-    OrderResponseModel addOrder(OrderRequestModel orderRequestModel, String customerId);
+    OrderResponseModel addOrder(OrderRequestModel orderRequestModel, String userId);
     OrderResponseModel[] getAllOrders();
 
-    OrderResponseModel[] getAllOrdersForCustomer(String customerId);
+    OrderResponseModel[] getAllOrdersForUser(String userId);
     OrderResponseModel getOrderById(String orderId);
     OrderResponseModel updateOrder(OrderRequestModel orderRequestModel,String orderId);
     void deleteOrder(String orderId);

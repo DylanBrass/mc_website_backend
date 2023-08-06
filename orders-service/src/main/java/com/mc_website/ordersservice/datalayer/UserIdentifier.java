@@ -3,21 +3,21 @@ package com.mc_website.ordersservice.datalayer;
 
 
 public class UserIdentifier {
-    private String customerId;
+    private String userId;
 
     public UserIdentifier() {
-        this.customerId = java.util.UUID.randomUUID().toString();
+        this.userId = java.util.UUID.randomUUID().toString();
     }
 
-    public UserIdentifier(String customerId) {
-        this.customerId = customerId;
+    public UserIdentifier(String userId) {
+        this.userId = userId;
     }
 
-    public void setCustomerId(String customerId) {
-        this.customerId = customerId;
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 
-    public String getCustomerId() {
-        return customerId;
+    public String getUserId() {
+        return userId;
     }
 }

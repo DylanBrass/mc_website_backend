@@ -6,7 +6,7 @@ plugins {
 	id 'jacoco'
 }
 
-group = 'com.gallery.customersservice'
+group = 'com.gallery.usersservice'
 version = '1.0.0-SNAPSHOT'
 ext {
 	mapstructVersion = "1.5.3.Final"

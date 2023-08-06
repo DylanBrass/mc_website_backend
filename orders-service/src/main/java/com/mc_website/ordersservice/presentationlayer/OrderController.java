@@ -9,7 +9,7 @@ import javax.mail.MessagingException;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/v1/customers")
+@RequestMapping("api/v1/users")
 public class OrderController {
     OrderService orderService;
 
@@ -22,14 +22,14 @@ public class OrderController {
         return ResponseEntity.ok(orderService.getAllOrders());
     }
 
-    @PostMapping("/{customerId}/orders")
-    public ResponseEntity<OrderResponseModel> addOrder(@RequestBody OrderRequestModel orderRequestModel,@PathVariable String customerId) throws MessagingException {
-        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(orderRequestModel, customerId));
+    @PostMapping("/{userId}/orders")
+    public ResponseEntity<OrderResponseModel> addOrder(@RequestBody OrderRequestModel orderRequestModel,@PathVariable String userId) throws MessagingException {
+        return ResponseEntity.status(HttpStatus.CREATED).body(orderService.addOrder(orderRequestModel, userId));
     }
 
-    @GetMapping("/{customerId}/orders")
-    public ResponseEntity<List<OrderResponseModel>> getAllOrdersForCustomer(@PathVariable String customerId){
-        return ResponseEntity.ok(orderService.getAllOrdersForCustomer(customerId));
+    @GetMapping("/{userId}/orders")
+    public ResponseEntity<List<OrderResponseModel>> getAllOrdersForUser(@PathVariable String userId){
+        return ResponseEntity.ok(orderService.getAllOrdersForUser(userId));
     }
 
     @DeleteMapping("/orders/{orderId}")

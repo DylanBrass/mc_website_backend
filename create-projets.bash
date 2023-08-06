@@ -6,12 +6,12 @@ spring init \
 --type=gradle-project \
 --java-version=17 \
 --packaging=jar \
---name=customers-service \
---package-name=com.mc_website.customers-service \
---groupId=com.mc_website.customers-service \
+--name=users-service \
+--package-name=com.mc_website.users-service \
+--groupId=com.mc_website.users-service \
 --dependencies=web \
 --version=1.0.0-SNAPSHOT \
-customers-service
+users-service
 
 spring init \
 --boot-version=3.0.2 \

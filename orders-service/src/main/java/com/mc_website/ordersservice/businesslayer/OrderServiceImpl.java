@@ -4,7 +4,7 @@ import com.mc_website.ordersservice.datalayer.*;
 import com.mc_website.ordersservice.datamapperlayer.OrderRequestMapper;
 import com.mc_website.ordersservice.datamapperlayer.OrderResponseMapper;
 import com.mc_website.ordersservice.domainclientlayer.UserServiceClient;
-import com.mc_website.ordersservice.presentationlayer.Customer.UserResponseModel;
+import com.mc_website.ordersservice.presentationlayer.User.UserResponseModel;
 import com.mc_website.ordersservice.presentationlayer.OrderRequestModel;
 import com.mc_website.ordersservice.presentationlayer.OrderResponseModel;
 import com.mc_website.ordersservice.utils.exceptions.InvalidInputException;
@@ -58,7 +58,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public OrderResponseModel addOrder(OrderRequestModel orderRequestModel, String customerId) throws MessagingException {
+    public OrderResponseModel addOrder(OrderRequestModel orderRequestModel, String userId) throws MessagingException {
 
         orderRequestModel.getItems().forEach(item -> {
             if (!findByOrderType(item.getOrderType().toString())) {
@@ -71,13 +71,13 @@ public class OrderServiceImpl implements OrderService {
 
 
         Orders savedOrder = orderRequestMapper.requestModelToEntity(orderRequestModel);
-        savedOrder.setCustomer(new UserIdentifier(customerId));
+        savedOrder.setUser(new UserIdentifier(userId));
         savedOrder.setOrderIdentifier(new OrderIdentifier());
         List<Item> items = new ArrayList<>(orderRequestModel.getItems());
         savedOrder.setItems(items);
 
-        UserResponseModel userResponseModel = userServiceClient.getCustomer(customerId);
-        savedOrder.setCustomer(new UserIdentifier(userResponseModel.getCustomerId()));
+        UserResponseModel userResponseModel = userServiceClient.getUser(userId);
+        savedOrder.setUser(new UserIdentifier(userResponseModel.getUserId()));
 
         try {
 
@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
                     InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("New order : " + savedOrder.getOrderIdentifier().getOrderId());
-            String messageStr = "<b>Customer </b>: "+ userResponseModel.getFirstName() + userResponseModel.getLastName() +"<br><b>Message : </b></br>"+savedOrder.getMessage() + "<br></br>";
+            String messageStr = "<b>User </b>: "+ userResponseModel.getFirstName() + userResponseModel.getLastName() +"<br><b>Message : </b></br>"+savedOrder.getMessage() + "<br></br>";
             for(int i=0; i< items.size();i++) {
                 messageStr +=
                         ("<br><table border ='6'> <tr> <td><b>Items : </b></br>"+ savedOrder.getItems().get(i).getItem() +
@@ -114,9 +114,9 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponseModel> getAllOrdersForCustomer(String customerId) {
+    public List<OrderResponseModel> getAllOrdersForUser(String userId) {
 
-        return orderResponseMapper.entitiesResponseModel(ordersRepository.getOrdersByCustomer_CustomerId(customerId));
+        return orderResponseMapper.entitiesResponseModel(ordersRepository.getOrdersByUser_UserId(userId));
     }
 
     @Override
@@ -128,10 +128,10 @@ public class OrderServiceImpl implements OrderService {
     public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId ) throws MessagingException {
         Orders existingOrder = ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId);
         Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
-        order.setCustomer(new UserIdentifier(existingOrder.getCustomer().getCustomerId()));
+        order.setUser(new UserIdentifier(existingOrder.getUser().getUserId()));
         order.setId(existingOrder.getId());
         order.setOrderIdentifier(existingOrder.getOrderIdentifier());
-        UserResponseModel userResponseModel = userServiceClient.getCustomer(existingOrder.getCustomer().getCustomerId());
+        UserResponseModel userResponseModel = userServiceClient.getUser(existingOrder.getUser().getUserId());
 
         try {
 
@@ -142,7 +142,7 @@ public class OrderServiceImpl implements OrderService {
                     InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
             message.setSubject("Updated order : " + order.getOrderIdentifier().getOrderId());
-            String messageStr = "Customer : "+ userResponseModel.getFirstName() + userResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
+            String messageStr = "User : "+ userResponseModel.getFirstName() + userResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
             for(int i=0; i< order.getItems().size();i++) {
                 messageStr +=
                         ("\nItems : "+ order.getItems().get(i).getItem() +

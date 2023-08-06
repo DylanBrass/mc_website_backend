@@ -24,7 +24,7 @@ public class OrderServiceClient {
                               @Value("${app.orders-service.port}") String orderServicePort) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.ORDERS_SERVICE_BASE_URL = "http://" + orderServiceHost + ":" + orderServicePort + "/api/v1/customers";
+        this.ORDERS_SERVICE_BASE_URL = "http://" + orderServiceHost + ":" + orderServicePort + "/api/v1/users";
     }
     public OrderResponseModel[] getAllOrders() {
         OrderResponseModel[] orderResponseModels;
@@ -38,10 +38,10 @@ public class OrderServiceClient {
     }
 
 
-    public OrderResponseModel[] getAllCustomersOrders(String customerId) {
+    public OrderResponseModel[] getAllUsersOrders(String userId) {
         OrderResponseModel[] orderResponseModels;
         try {
-            String url = ORDERS_SERVICE_BASE_URL + "/" + customerId + "/orders";
+            String url = ORDERS_SERVICE_BASE_URL + "/" + userId + "/orders";
             orderResponseModels = restTemplate.getForObject(url, OrderResponseModel[].class);
         } catch (HttpClientErrorException ex) {
             throw handleHttpClientException(ex);
@@ -49,10 +49,10 @@ public class OrderServiceClient {
         return orderResponseModels;
     }
 
-    public OrderResponseModel addOrder(OrderRequestModel orderRequestModel,String customerId) {
+    public OrderResponseModel addOrder(OrderRequestModel orderRequestModel,String userId) {
         OrderResponseModel orderResponseModel;
         try {
-            String url = ORDERS_SERVICE_BASE_URL + "/"+ customerId + "/orders";
+            String url = ORDERS_SERVICE_BASE_URL + "/"+ userId + "/orders";
 
             orderResponseModel = restTemplate
                     .postForObject(url, orderRequestModel, OrderResponseModel.class);

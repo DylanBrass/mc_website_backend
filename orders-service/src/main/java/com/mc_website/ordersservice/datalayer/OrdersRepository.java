@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 import java.util.List;
 
 public interface OrdersRepository extends MongoRepository<Orders,Integer> {
-    List<Orders> getOrdersByCustomer_CustomerId(String customerId);
+    List<Orders> getOrdersByUser_UserId(String userId);
 
     Orders getOrdersByOrderIdentifier_OrderId(String orderId);
 }

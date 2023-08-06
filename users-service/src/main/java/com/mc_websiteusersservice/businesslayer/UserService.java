@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface UserService {
     List<UserResponseModel> getUsers();
-    UserResponseModel getUserById(String customerId);
+    UserResponseModel getUserById(String userId);
     UserResponseModel addUser(UserRequestModel userRequestModel);
-    UserResponseModel updateUser(String customerId, UserRequestModel userRequestModel);
+    UserResponseModel updateUser(String userId, UserRequestModel userRequestModel);
 
     UserResponseModel getUserByEmail(String email);
     UserResponseModel getUserByEmailAndPassword(String email, String password);
-    void deleteUser(String customerId);
+    void deleteUser(String userId);
 
     void updateResetPasswordToken(String token, String email);
 

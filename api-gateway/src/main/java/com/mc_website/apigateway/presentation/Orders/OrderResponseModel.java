@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 public class OrderResponseModel {
     String orderId;
-    String customer;
+    String user;
     List<Item> items;
     String message;
 }

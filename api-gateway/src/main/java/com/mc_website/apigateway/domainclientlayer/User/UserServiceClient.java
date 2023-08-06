@@ -18,21 +18,21 @@ import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
 public class UserServiceClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
-    private final String CUSTOMER_SERVICE_BASE_URL;
+    private final String USER_SERVICE_BASE_URL;
 
     public UserServiceClient(RestTemplate restTemplate,
                              ObjectMapper objectMapper,
-                             @Value("${app.users-service.host}") String customerServiceHost,
-                             @Value("${app.users-service.port}") String customerServicePort) {
+                             @Value("${app.users-service.host}") String userServiceHost,
+                             @Value("${app.users-service.port}") String userServicePort) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-        this.CUSTOMER_SERVICE_BASE_URL = "http://" + customerServiceHost + ":" + customerServicePort + "/api/v1/customers";
+        this.USER_SERVICE_BASE_URL = "http://" + userServiceHost + ":" + userServicePort + "/api/v1/users";
     }
 
-    public UserResponseModel[] getAllCustomers() {
+    public UserResponseModel[] getAllUsers() {
             UserResponseModel[] userResponseModels;
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL;
+                String url = USER_SERVICE_BASE_URL;
                 userResponseModels = restTemplate.getForObject(url, UserResponseModel[].class);
             } catch (HttpClientErrorException ex) {
                 throw handleHttpClientException(ex);
@@ -40,10 +40,10 @@ public class UserServiceClient {
             return userResponseModels;
         }
 
-        public UserResponseModel getCustomer(String customerId) {
+        public UserResponseModel getUser(String userId) {
             UserResponseModel userResponseModel;
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
+                String url = USER_SERVICE_BASE_URL + "/" + userId;
                 userResponseModel = restTemplate
                         .getForObject(url, UserResponseModel.class);
 
@@ -53,10 +53,10 @@ public class UserServiceClient {
             return userResponseModel;
         }
 
-        public UserResponseModel getCustomerByEmail(String email) {
+        public UserResponseModel getUserByEmail(String email) {
             UserResponseModel userResponseModel;
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL + "/email?email=" + email;
+                String url = USER_SERVICE_BASE_URL + "/email?email=" + email;
                 userResponseModel = restTemplate
                         .getForObject(url, UserResponseModel.class);
 
@@ -66,10 +66,10 @@ public class UserServiceClient {
             return userResponseModel;
         }
 
-        public UserResponseModel getCustomerByEmailAndPassword(String email, String password) {
+        public UserResponseModel getUserByEmailAndPassword(String email, String password) {
             UserResponseModel userResponseModel;
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL + "/login";
+                String url = USER_SERVICE_BASE_URL + "/login";
                 UserLoginRequestModel userLoginRequestModel = new UserLoginRequestModel(email, password);
                 userResponseModel = restTemplate
                         .postForObject(url, userLoginRequestModel, UserResponseModel.class);
@@ -80,10 +80,10 @@ public class UserServiceClient {
             return userResponseModel;
         }
 
-        public UserResponseModel addCustomer(UserRequestModel userRequestModel) {
+        public UserResponseModel addUser(UserRequestModel userRequestModel) {
             UserResponseModel userResponseModel;
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL;
+                String url = USER_SERVICE_BASE_URL;
                 userResponseModel = restTemplate
                         .postForObject(url, userRequestModel, UserResponseModel.class);
 
@@ -93,22 +93,22 @@ public class UserServiceClient {
             return userResponseModel;
         }
 
-        public UserResponseModel updateCustomer(String customerId, UserRequestModel userRequestModel) {
+        public UserResponseModel updateUser(String userId, UserRequestModel userRequestModel) {
             UserResponseModel userResponseModel;
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
-                HttpEntity<UserRequestModel> customerRequestModelHttpEntity = new HttpEntity<>(userRequestModel);
+                String url = USER_SERVICE_BASE_URL + "/" + userId;
+                HttpEntity<UserRequestModel> userRequestModelHttpEntity = new HttpEntity<>(userRequestModel);
                 userResponseModel = restTemplate
-                        .exchange(url, HttpMethod.PUT, customerRequestModelHttpEntity, UserResponseModel.class).getBody();
+                        .exchange(url, HttpMethod.PUT, userRequestModelHttpEntity, UserResponseModel.class).getBody();
             } catch (HttpClientErrorException ex) {
                 throw handleHttpClientException(ex);
             }
             return userResponseModel;
         }
 
-        public void deleteCustomer(String customerId) {
+        public void deleteUser(String userId) {
             try {
-                String url = CUSTOMER_SERVICE_BASE_URL + "/" + customerId;
+                String url = USER_SERVICE_BASE_URL + "/" + userId;
                 restTemplate
                         .delete(url);
 
@@ -117,10 +117,10 @@ public class UserServiceClient {
             }
         }
 
-    public String customerForgotPassword() {
+    public String userForgotPassword() {
         String form;
         try {
-            String url = CUSTOMER_SERVICE_BASE_URL + "/forgot_password";
+            String url = USER_SERVICE_BASE_URL + "/forgot_password";
             form = restTemplate
                     .getForObject(url, String.class);
 
@@ -136,7 +136,7 @@ public class UserServiceClient {
 
         String formPage;
         try {
-            String url = CUSTOMER_SERVICE_BASE_URL+"/forgot_password";
+            String url = USER_SERVICE_BASE_URL+"/forgot_password";
             formPage = restTemplate
                     .postForObject(url, userResetPwdRequestModel, String.class);
 
@@ -145,10 +145,10 @@ public class UserServiceClient {
         }
         return formPage;
     }
-    public String customerShowResetPage(String token) {
+    public String userShowResetPage(String token) {
         String form;
         try {
-            String url = CUSTOMER_SERVICE_BASE_URL + "/reset_password";
+            String url = USER_SERVICE_BASE_URL + "/reset_password";
             UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
             builder.queryParam("token",token);
             url = builder.toUriString();
@@ -167,7 +167,7 @@ public class UserServiceClient {
 
         String formPage;
         try {
-            String url = CUSTOMER_SERVICE_BASE_URL+"/reset_password";
+            String url = USER_SERVICE_BASE_URL+"/reset_password";
             formPage = restTemplate
                     .postForObject(url, userResetPwdWithTokenRequestModel, String.class);
 

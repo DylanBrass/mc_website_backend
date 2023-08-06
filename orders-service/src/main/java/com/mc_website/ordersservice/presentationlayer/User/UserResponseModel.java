@@ -1,4 +1,4 @@
-package com.mc_website.ordersservice.presentationlayer.Customer;
+package com.mc_website.ordersservice.presentationlayer.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class UserResponseModel {
-    String customerId;
+    String userId;
     String firstName;
     String lastName;
     String email;

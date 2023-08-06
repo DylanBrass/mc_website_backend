@@ -21,7 +21,7 @@ import java.util.Properties;
 import java.util.UUID;
 
 @Controller
-@RequestMapping("api/v1/customers")
+@RequestMapping("api/v1/users")
 @CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
 public class UserController {
@@ -51,35 +51,34 @@ public class UserController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<UserResponseModel>> getCustomers(){
+    public ResponseEntity<List<UserResponseModel>> getAllUsers(){
         return ResponseEntity.ok(userService.getUsers());
     }
-    @GetMapping("/{customerId}")
-    public ResponseEntity<UserResponseModel> getCustomerById(@PathVariable String customerId){
-        return ResponseEntity.ok(userService.getUserById(customerId));
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserResponseModel> getUserById(@PathVariable String userId){
+        return ResponseEntity.ok(userService.getUserById(userId));
     }
 
-    // Get customer by email
     @GetMapping("/email")
-    public ResponseEntity<UserResponseModel> getCustomerByEmail(@RequestParam("email") String email){
+    public ResponseEntity<UserResponseModel> getUserByEmail(@RequestParam("email") String email){
         return ResponseEntity.ok(userService.getUserByEmail(email));
     }
 
     @PostMapping()
-    public ResponseEntity<UserResponseModel> addCustomer(@RequestBody UserRequestModel userRequestModel){
+    public ResponseEntity<UserResponseModel> addUser(@RequestBody UserRequestModel userRequestModel){
         return ResponseEntity.ok(userService.addUser(userRequestModel));
     }
     @PostMapping("/login")
-    public ResponseEntity<UserResponseModel> getCustomerByEmailAndPassword(@RequestBody UserLoginRequestModel customerRequestModel){
-        return ResponseEntity.ok(userService.getUserByEmailAndPassword(customerRequestModel.getEmail(), customerRequestModel.getPassword()));
+    public ResponseEntity<UserResponseModel> getUserByEmailAndPassword(@RequestBody UserLoginRequestModel userLoginRequestModel){
+        return ResponseEntity.ok(userService.getUserByEmailAndPassword(userLoginRequestModel.getEmail(), userLoginRequestModel.getPassword()));
     }
-    @PutMapping("/{customerId}")
-    public ResponseEntity<UserResponseModel> updateCustomer(@PathVariable String customerId, @RequestBody UserRequestModel userRequestModel){
-        return ResponseEntity.ok(userService.updateUser(customerId, userRequestModel));
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel){
+        return ResponseEntity.ok(userService.updateUser(userId, userRequestModel));
     }
-    @DeleteMapping("/{customerId}")
-    public ResponseEntity<Void> deleteCustomer(@PathVariable String customerId){
-        userService.deleteUser(customerId);
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable String userId){
+        userService.deleteUser(userId);
         return ResponseEntity.noContent().build();
     }
 
@@ -102,7 +101,7 @@ public class UserController {
 
         try {
             userService.updateResetPasswordToken(token, email);
-            String resetPasswordLink =  userResetPwdRequestModel.getUrl()+ "/api/v1/customers/reset_password?token=" + token;
+            String resetPasswordLink =  userResetPwdRequestModel.getUrl()+ "/api/v1/users/reset_password?token=" + token;
             sendEmail(email, resetPasswordLink);
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
 

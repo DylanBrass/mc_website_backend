@@ -23,8 +23,8 @@ public class ResetPasswordToken {
 
     private Date expiryDate;
 
-    public ResetPasswordToken(String customerId, String token) {
-        this.userIdentifier = new UserIdentifier(customerId);
+    public ResetPasswordToken(String userId, String token) {
+        this.userIdentifier = new UserIdentifier(userId);
         this.token = token;
         Calendar date = Calendar.getInstance();
         long timeInSecs = date.getTimeInMillis();
