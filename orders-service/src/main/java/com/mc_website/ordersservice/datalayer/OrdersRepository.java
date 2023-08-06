@@ -9,4 +9,6 @@ public interface OrdersRepository extends MongoRepository<Orders,Integer> {
     List<Orders> getOrdersByUser_UserId(String userId);
 
     Orders getOrdersByOrderIdentifier_OrderId(String orderId);
+
+    boolean existsByOrderIdentifier_OrderId(String orderId);
 }

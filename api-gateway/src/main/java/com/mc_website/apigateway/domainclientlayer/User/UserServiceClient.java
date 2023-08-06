@@ -2,6 +2,8 @@ package com.mc_website.apigateway.domainclientlayer.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.presentation.User.*;
+import com.mc_website.apigateway.utils.InvalidInputException;
+import com.mc_website.apigateway.utils.NotFoundException;
 import com.mc_website.apigateway.utils.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -179,10 +181,10 @@ public class UserServiceClient {
 
         private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
             if (ex.getStatusCode() == NOT_FOUND) {
-                //return new NotFoundException(ex.getMessage());
+                return new NotFoundException(ex.getMessage());
             }
             if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
-                //return new InvalidInputException(ex.getMessage());
+                return new InvalidInputException(ex.getMessage());
             }
             return ex;
         }

@@ -3,6 +3,8 @@ package com.mc_website.apigateway.domainclientlayer.Orders;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.presentation.Orders.OrderRequestModel;
 import com.mc_website.apigateway.presentation.Orders.OrderResponseModel;
+import com.mc_website.apigateway.utils.InvalidInputException;
+import com.mc_website.apigateway.utils.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -78,10 +80,10 @@ public class OrderServiceClient {
     }
     private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
         if (ex.getStatusCode() == NOT_FOUND) {
-            //return new NotFoundException(ex.getMessage());
+            return new NotFoundException(ex.getMessage());
         }
         if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
-            //return new InvalidInputException(ex.getMessage());
+            return new InvalidInputException(ex.getMessage());
         }
         return ex;
     }

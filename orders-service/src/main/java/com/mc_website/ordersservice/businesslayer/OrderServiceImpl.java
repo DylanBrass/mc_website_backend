@@ -7,8 +7,7 @@ import com.mc_website.ordersservice.domainclientlayer.UserServiceClient;
 import com.mc_website.ordersservice.presentationlayer.User.UserResponseModel;
 import com.mc_website.ordersservice.presentationlayer.OrderRequestModel;
 import com.mc_website.ordersservice.presentationlayer.OrderResponseModel;
-import com.mc_website.ordersservice.utils.exceptions.InvalidInputException;
-import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
+import com.mc_website.ordersservice.utils.exceptions.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -62,10 +61,10 @@ public class OrderServiceImpl implements OrderService {
 
         orderRequestModel.getItems().forEach(item -> {
             if (!findByOrderType(item.getOrderType().toString())) {
-                throw new InvalidInputException("Order type entered is not a valid type : " + item.getOrderType().toString());
+                throw new InvalidOrderTypeException("Order type entered is not a valid type : " + item.getOrderType().toString());
             }
             if (!findByItemType(item.getItemType().toString())) {
-                throw new InvalidInputException("Item type entered is not a valid type : " + item.getItemType().toString());
+                throw new InvalidItemTypeException("Item type entered is not a valid type : " + item.getItemType().toString());
             }
         });
 
@@ -121,12 +120,18 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderResponseModel getOrderById(String orderId) {
+        // Check if the order exists
+        if(!ordersRepository.existsByOrderIdentifier_OrderId(orderId))
+            throw new ExistingOrderNotFoundException("Order with id " + orderId + " not found.");
         return orderResponseMapper.entityToResponseModel(ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId));
     }
 
     @Override
     public OrderResponseModel updateOrder(OrderRequestModel orderRequestModel, String orderId ) throws MessagingException {
         Orders existingOrder = ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId);
+        if (existingOrder==null){
+            throw new ExistingOrderNotFoundException("No order was found with ID : " + orderId);
+        }
         Orders order=orderRequestMapper.requestModelToEntity(orderRequestModel);
         order.setUser(new UserIdentifier(existingOrder.getUser().getUserId()));
         order.setId(existingOrder.getId());
@@ -166,7 +171,7 @@ public class OrderServiceImpl implements OrderService {
     public void deleteOrder(String orderId) {
         Orders order = ordersRepository.getOrdersByOrderIdentifier_OrderId(orderId);
         if (order==null){
-            throw new NotFoundException("No order was found with ID : " + orderId);
+            throw new ExistingOrderNotFoundException("No order was found with ID : " + orderId);
         }
         ordersRepository.delete(order);
     }

@@ -2,6 +2,8 @@ package com.mc_website.ordersservice.domainclientlayer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.ordersservice.presentationlayer.User.UserResponseModel;
+import com.mc_website.ordersservice.utils.exceptions.InvalidInputException;
+import com.mc_website.ordersservice.utils.exceptions.NotFoundException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
@@ -39,10 +41,10 @@ public class UserServiceClient {
 
     private RuntimeException handleHttpClientException(HttpClientErrorException ex) {
         if (ex.getStatusCode() == NOT_FOUND) {
-            //return new NotFoundException(ex.getMessage());
+            return new NotFoundException(ex.getMessage());
         }
         if (ex.getStatusCode() == UNPROCESSABLE_ENTITY) {
-            //return new InvalidInputException(ex.getMessage());
+            return new InvalidInputException(ex.getMessage());
         }
         return ex;
     }
