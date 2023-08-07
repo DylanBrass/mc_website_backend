@@ -16,15 +16,14 @@ import static org.springframework.http.HttpStatus.*;
 public class GlobalControllerExceptionHandler {
     @ResponseStatus(NOT_FOUND)
     @ExceptionHandler(ExistingUserNotFoundException.class)
-    public HttpErrorInfo handleExistingGalleryNotFoundException(WebRequest request, Exception ex) {
+    public HttpErrorInfo handleExistingUserNotFoundException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(NOT_FOUND, request, ex);
     }
     @ResponseStatus(BAD_REQUEST)
     @ExceptionHandler(UserAlreadyExistsException.class)
-    public HttpErrorInfo handleExistingExhibitionByNameNotFoundException(WebRequest request, Exception ex) {
+    public HttpErrorInfo handleUserAlreadyExistsException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(BAD_REQUEST, request, ex);
     }
-
     private HttpErrorInfo createHttpErrorInfo(HttpStatus httpStatus, WebRequest request, Exception ex) {
         final String path = request.getDescription(false);
         final String message = ex.getMessage();

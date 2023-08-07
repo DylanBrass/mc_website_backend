@@ -1,4 +1,4 @@
-package com.mc_website.apigateway.utils;
+package com.mc_website.apigateway.utils.exceptions;
 
 public class NotFoundException extends RuntimeException{
 

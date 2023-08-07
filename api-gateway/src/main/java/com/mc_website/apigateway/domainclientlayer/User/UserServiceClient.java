@@ -2,8 +2,8 @@ package com.mc_website.apigateway.domainclientlayer.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.presentation.User.*;
-import com.mc_website.apigateway.utils.InvalidInputException;
-import com.mc_website.apigateway.utils.NotFoundException;
+import com.mc_website.apigateway.utils.exceptions.InvalidInputException;
+import com.mc_website.apigateway.utils.exceptions.NotFoundException;
 import com.mc_website.apigateway.utils.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,8 +13,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNPROCESSABLE_ENTITY;
+import static org.springframework.http.HttpStatus.*;
 
 @Component
 public class UserServiceClient {
