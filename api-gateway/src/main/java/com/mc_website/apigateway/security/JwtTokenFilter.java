@@ -72,6 +72,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             //todo implement error handling of client error
             UserResponseModel userResponseModel = userServiceClient
                     .getUserByEmail(jwtTokenUtil.getUsernameFromToken(token));
+            
             UserDetails userDetails = new UserPrincipalImpl(userResponseModel);
 
 
@@ -89,7 +90,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             SecurityContextHolder.getContext().setAuthentication(authentication);
             chain.doFilter(request, response);
         }
-        catch (JwtException ex){
+        catch (Exception ex){
             resolver.resolveException(request, response, null,ex);
 
         }
