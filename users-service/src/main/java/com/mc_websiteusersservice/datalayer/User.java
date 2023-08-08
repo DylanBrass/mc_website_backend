@@ -36,6 +36,15 @@ public class User {
         this.password = password;
     }
 
+    public User(String firstName, String lastName, String email, String phoneNumber, String password) {
+        this.userIdentifier = new UserIdentifier();
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+    }
+
     public User(UserResponseModel user) {
         this.userIdentifier = new UserIdentifier();
         this.firstName = user.getFirstName();
