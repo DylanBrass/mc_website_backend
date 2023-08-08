@@ -1,7 +1,5 @@
 package com.mc_website.ordersservice.datalayer;
 
-import java.util.UUID;
-
 public class OrderIdentifier {
     private String orderId;
 

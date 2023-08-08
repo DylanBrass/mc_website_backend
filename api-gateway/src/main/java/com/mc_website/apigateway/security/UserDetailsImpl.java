@@ -2,9 +2,6 @@ package com.mc_website.apigateway.security;
 
 import com.mc_website.apigateway.domainclientlayer.User.UserServiceClient;
 import com.mc_website.apigateway.presentation.User.UserResponseModel;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -12,7 +9,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserDetailsImpl implements UserDetailsService {
 
-    private UserServiceClient userServiceClient;
+    private final UserServiceClient userServiceClient;
 
     public UserDetailsImpl(UserServiceClient userServiceClient) {
         this.userServiceClient = userServiceClient;

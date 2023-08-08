@@ -2,7 +2,6 @@ package com.mc_website.apigateway.security;
 
 import com.mc_website.apigateway.presentation.User.UserResponseModel;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
@@ -24,6 +23,7 @@ public class UserPrincipalImpl implements UserDetails {
     public String getPassword() {
         return user.getPassword();
     }
+
 
     @Override
     public String getUsername() {

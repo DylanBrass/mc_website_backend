@@ -1,8 +1,10 @@
 package com.mc_website.apigateway.utils;
 
 import com.mc_website.apigateway.utils.exceptions.*;
+import io.jsonwebtoken.JwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -45,6 +47,17 @@ public class GlobalControllerExceptionHandler {
     @ExceptionHandler(InvalidItemTypeException.class)
     public HttpErrorInfo handleInvalidItemTypeException(WebRequest request, Exception ex) {
         return createHttpErrorInfo(BAD_REQUEST, request, ex);
+    }
+
+    @ResponseStatus(UNAUTHORIZED)
+    @ExceptionHandler(InvalidBearerTokenException.class)
+    public HttpErrorInfo handleInvalidBearerTokenException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNAUTHORIZED, request, ex);
+    }
+    @ResponseStatus(UNAUTHORIZED)
+    @ExceptionHandler(JwtException.class)
+    public HttpErrorInfo handleJwtException(WebRequest request, Exception ex) {
+        return createHttpErrorInfo(UNAUTHORIZED, request, ex);
     }
 
     @ResponseStatus(BAD_REQUEST)

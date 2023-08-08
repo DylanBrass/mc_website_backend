@@ -4,24 +4,22 @@ import com.mc_website.ordersservice.datalayer.*;
 import com.mc_website.ordersservice.datamapperlayer.OrderRequestMapper;
 import com.mc_website.ordersservice.datamapperlayer.OrderResponseMapper;
 import com.mc_website.ordersservice.domainclientlayer.UserServiceClient;
-import com.mc_website.ordersservice.presentationlayer.User.UserResponseModel;
 import com.mc_website.ordersservice.presentationlayer.OrderRequestModel;
 import com.mc_website.ordersservice.presentationlayer.OrderResponseModel;
-import com.mc_website.ordersservice.utils.exceptions.*;
+import com.mc_website.ordersservice.presentationlayer.User.UserResponseModel;
+import com.mc_website.ordersservice.utils.exceptions.ExistingOrderNotFoundException;
+import com.mc_website.ordersservice.utils.exceptions.InvalidItemTypeException;
+import com.mc_website.ordersservice.utils.exceptions.InvalidOrderTypeException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import javax.mail.*;
 
 @Slf4j
 @Service

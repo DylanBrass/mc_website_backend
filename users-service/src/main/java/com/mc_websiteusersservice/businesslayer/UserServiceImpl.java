@@ -1,9 +1,9 @@
 package com.mc_websiteusersservice.businesslayer;
 
-import com.mc_websiteusersservice.datalayer.User;
-import com.mc_websiteusersservice.datalayer.UserRepository;
 import com.mc_websiteusersservice.datalayer.ResetPasswordToken;
 import com.mc_websiteusersservice.datalayer.ResetPasswordTokenRepository;
+import com.mc_websiteusersservice.datalayer.User;
+import com.mc_websiteusersservice.datalayer.UserRepository;
 import com.mc_websiteusersservice.datamapperlayer.UserRequestMapper;
 import com.mc_websiteusersservice.datamapperlayer.UserResponseMapper;
 import com.mc_websiteusersservice.presentationlayer.UserRequestModel;

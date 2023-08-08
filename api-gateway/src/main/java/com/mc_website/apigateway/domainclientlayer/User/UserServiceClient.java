@@ -2,13 +2,14 @@ package com.mc_website.apigateway.domainclientlayer.User;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.presentation.User.*;
+import com.mc_website.apigateway.utils.Utility;
 import com.mc_website.apigateway.utils.exceptions.ExistingUserNotFoundException;
 import com.mc_website.apigateway.utils.exceptions.InvalidInputException;
 import com.mc_website.apigateway.utils.exceptions.NotFoundException;
-import com.mc_website.apigateway.utils.Utility;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;

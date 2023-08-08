@@ -4,8 +4,6 @@ import com.mc_website.apigateway.domainclientlayer.Orders.OrderServiceClient;
 import com.mc_website.apigateway.presentation.Orders.OrderRequestModel;
 import com.mc_website.apigateway.presentation.Orders.OrderResponseModel;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 @Service
 public class OrderServiceImpl implements OrderService{
 

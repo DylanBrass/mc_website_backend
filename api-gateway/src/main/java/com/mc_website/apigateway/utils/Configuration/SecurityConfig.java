@@ -1,5 +1,6 @@
-package com.mc_website.apigateway.security;
+package com.mc_website.apigateway.utils.Configuration;
 
+import com.mc_website.apigateway.security.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

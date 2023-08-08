@@ -1,11 +1,13 @@
 package com.mc_website.apigateway.utils;
 
 import lombok.Getter;
+import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
 import java.time.ZonedDateTime;
 
 @Getter
+@Setter
 public class HttpErrorInfo {
     private final ZonedDateTime timestamp;
     private final String path;
