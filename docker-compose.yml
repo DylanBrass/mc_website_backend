@@ -10,11 +10,6 @@ services:
       - users-service
       - orders-service
 
-  eureka-server:
-    build: eureka-server
-    hostname: eureka-server
-    ports:
-      - "8761:8761"
   users-service:
     # to find the Dockerfile
     build: users-service

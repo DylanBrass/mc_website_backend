@@ -13,6 +13,7 @@ public class UserResponseModel {
     String userId;
     String firstName;
     String lastName;
+    String password;
     String email;
     String phoneNumber;
 }

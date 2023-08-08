@@ -31,3 +31,10 @@ app:
   orders-service:
     host: orders-service
     port: 8080
+---
+spring:
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:9000/oauth2/jwks

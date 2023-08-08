@@ -1,10 +1,20 @@
 package com.mc_website.apigateway.presentation.User;
 
 import com.mc_website.apigateway.businesslayer.User.UsersService;
+import com.mc_website.apigateway.security.JwtTokenUtil;
+import com.mc_website.apigateway.security.UserPrincipalImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,10 +22,19 @@ import org.springframework.web.bind.annotation.*;
 @CrossOrigin(origins = "http://localhost:3000")
 @Slf4j
 public class UserController {
+    PasswordEncoder passwordEncoder;
     UsersService userService;
-    public UserController(UsersService userService) {
+
+    private final AuthenticationManager authenticationManager;
+    private final JwtTokenUtil jwtTokenUtil;
+
+    public UserController(PasswordEncoder passwordEncoder, UsersService userService, AuthenticationManager authenticationManager, JwtTokenUtil jwtTokenUtil) {
+        this.passwordEncoder = passwordEncoder;
         this.userService = userService;
+        this.authenticationManager = authenticationManager;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
+
 
     @GetMapping
     public ResponseEntity<UserResponseModel[]> getAllUsers(){
@@ -33,12 +52,31 @@ public class UserController {
 
     @PostMapping()
     public ResponseEntity<UserResponseModel> addUser(@RequestBody UserRequestModel userRequestModel){
+        userRequestModel.setPassword(passwordEncoder.encode(userRequestModel.getPassword()));
         return ResponseEntity.ok(userService.addUser(userRequestModel));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseModel> loginUser(@RequestBody UserRequestModel userRequestModel){
-        return ResponseEntity.ok(userService.getUserByEmailAndPassword(userRequestModel.getEmail(), userRequestModel.getPassword()));
+    public ResponseEntity<UserResponseModel> loginUser(@RequestBody UserLoginRequestModel login){
+        try {
+            Authentication authenticate = authenticationManager
+                    .authenticate(
+                            new UsernamePasswordAuthenticationToken(
+                                    login.getEmail(), login.getPassword()
+                            )
+                    );
+
+            UserPrincipalImpl user = (UserPrincipalImpl) authenticate.getPrincipal();
+
+            return ResponseEntity.ok()
+                    .header(
+                            HttpHeaders.AUTHORIZATION,
+                            jwtTokenUtil.generateToken(user)
+                    )
+                    .body(userService.getUserByEmail(user.getUsername()));
+        } catch (BadCredentialsException ex) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
     @PutMapping("/{userId}")
     public ResponseEntity<UserResponseModel> updateUser(@PathVariable String userId, @RequestBody UserRequestModel userRequestModel){

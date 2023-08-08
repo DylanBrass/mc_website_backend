@@ -23,7 +23,6 @@ public class UserServiceImpl implements UserService {
     private final UserResponseMapper userResponseMapper;
     private final UserRequestMapper userRequestMapper;
     private final ResetPasswordTokenRepository tokenRepository;
-
     public UserServiceImpl(UserRepository userRepository, UserResponseMapper userResponseMapper, UserRequestMapper userRequestMapper, ResetPasswordTokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.userResponseMapper = userResponseMapper;
@@ -50,29 +49,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByEmail(userRequestModel.getEmail()))
             throw new UserAlreadyExistsException("User with email " + userRequestModel.getEmail() + " already exists.");
         User userWithPassword = userRequestMapper.requestModelToEntity(userRequestModel);
-        try
-        {
-            // Create MessageDigest instance for MD5
-            MessageDigest md = MessageDigest.getInstance("MD5");
-
-            // Add password bytes to digest
-            md.update(userRequestModel.getPassword().getBytes());
-
-            // Get the hash's bytes
-            byte[] bytes = md.digest();
-
-            // This bytes[] has bytes in decimal format. Convert it to hexadecimal format
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-            // Get complete hashed password in hex format
-            userWithPassword.setPassword(sb.toString());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
+      userWithPassword.setPassword(userRequestModel.getPassword());
 
         User user = userRepository.save(userWithPassword);
 
