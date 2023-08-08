@@ -30,6 +30,7 @@ import java.util.List;
 @EnableWebSecurity
 public class SecurityConfig  {
 
+
     UserDetailsService userDetailService;
     JwtTokenFilter jwtTokenFilter;
 

@@ -144,16 +144,16 @@ public class OrderServiceImpl implements OrderService {
                     Message.RecipientType.TO,
                     InternetAddress.parse(storeEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com || denisanhategan@gmail.com
             );
-            message.setSubject("Updated order : " + order.getOrderIdentifier().getOrderId());
-            String messageStr = "User : "+ userResponseModel.getFirstName() + userResponseModel.getLastName()+ "Message : "+order.getMessage() + "\n";
+            message.setSubject("New order : " + order.getOrderIdentifier().getOrderId());
+            String messageStr = "<b>User </b>: "+ userResponseModel.getFirstName() + userResponseModel.getLastName() +"<br><b>Message : </b></br>"+order.getMessage() + "<br></br>";
             for(int i=0; i< order.getItems().size();i++) {
                 messageStr +=
-                        ("\nItems : "+ order.getItems().get(i).getItem() +
-                                "\nItem Type : " +order.getItems().get(i).getItemType().toString()+ "\nOrder Type :" + order.getItems().get(i).getOrderType() +
-                                "\nQuantity :" + order.getItems().get(i).getQuantity() +"\nDescription: " + order.getItems().get(i).getDescription());
+                        ("<br><table border ='6'> <tr> <td><b>Items : </b></br>"+ order.getItems().get(i).getItem() +
+                                "<br><b>Item Type : </b></br>" +order.getItems().get(i).getItemType().toString()+ "<br><b>Order Type : </b></br>" + order.getItems().get(i).getOrderType() +
+                                "<br><b>Quantity : </b></br>" + order.getItems().get(i).getQuantity() +"<br><b>Description: </b></br>" + order.getItems().get(i).getDescription() + "</td></tr></table><br>") ;
             }
-            message.setText(messageStr);
-            Orders updatedOrder=ordersRepository.save(order);
+            message.setContent("" + messageStr + "","text/html");
+            Orders updatedOrder = ordersRepository.insert(order);
 
             Transport.send(message);
 

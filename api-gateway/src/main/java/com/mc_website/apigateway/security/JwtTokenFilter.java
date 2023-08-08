@@ -4,17 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.domainclientlayer.User.UserServiceClient;
 import com.mc_website.apigateway.presentation.User.UserResponseModel;
 import io.jsonwebtoken.JwtException;
+import io.netty.handler.codec.http.HttpResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.server.resource.InvalidBearerTokenException;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,7 +29,9 @@ import static com.jayway.jsonpath.internal.Utils.isEmpty;
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-
+    @Autowired
+    @Qualifier("handlerExceptionResolver")
+    private HandlerExceptionResolver resolver;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserServiceClient userServiceClient;
 
@@ -57,7 +64,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         try {
 
             if (!jwtTokenUtil.validateToken(token)) {
-                chain.doFilter(request, response);
+                resolver.resolveException(request, response, null, new InvalidBearerTokenException("Token is expired"));
                 return;
             }
 
@@ -83,7 +90,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         }
         catch (JwtException ex){
-            chain.doFilter(request, response);
+            resolver.resolveException(request, response, null,ex);
 
         }
     }
