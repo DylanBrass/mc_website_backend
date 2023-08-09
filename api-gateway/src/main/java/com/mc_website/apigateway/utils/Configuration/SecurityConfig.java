@@ -24,7 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.util.Arrays;
 import java.util.List;
 @Configuration
 @EnableWebSecurity
@@ -57,7 +61,7 @@ public class SecurityConfig  {
                         .anyRequest().denyAll())
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable);
+                .csrf(AbstractHttpConfigurer::disable).cors().configurationSource(corsConfigurationSource());
         http.addFilterBefore(
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -71,7 +75,24 @@ public class SecurityConfig  {
 //                .requestMatchers(HttpMethod.POST, "/login/**");
 //
 //    }
-
+@Bean
+public CorsConfigurationSource corsConfigurationSource() {
+    final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    final CorsConfiguration config = new CorsConfiguration();
+    config.setAllowCredentials(true);
+    config.addAllowedOrigin("http://localhost:3000");
+    config.addAllowedHeader("*");
+    config.addExposedHeader("Authorization");
+    config.addAllowedMethod("OPTIONS");
+    config.addAllowedMethod("HEAD");
+    config.addAllowedMethod("GET");
+    config.addAllowedMethod("PUT");
+    config.addAllowedMethod("POST");
+    config.addAllowedMethod("DELETE");
+    config.addAllowedMethod("PATCH");
+    source.registerCorsConfiguration("/**", config);
+    return source;
+}
     @Bean
     public UserDetailsService userDetailsServiceBean() throws Exception {
 
