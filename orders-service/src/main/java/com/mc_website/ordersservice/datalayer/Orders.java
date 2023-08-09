@@ -25,4 +25,11 @@ public class Orders {
     List<Item> items;
 
     String message;
+
+    public Orders(UserIdentifier user, List<Item> items, String message) {
+        this.orderIdentifier = new OrderIdentifier();
+        this.user = user;
+        this.items = items;
+        this.message = message;
+    }
 }
