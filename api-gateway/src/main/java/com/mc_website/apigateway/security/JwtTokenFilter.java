@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.netty.handler.codec.http.HttpResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,15 +51,25 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
-            // Get authorization header and validate
-            final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-            if (isEmpty(header) || !header.startsWith("Bearer ")) {
+
+            if(request.getRequestURI().contains("login")){
                 chain.doFilter(request, response);
                 return;
             }
+            // Get authorization header and validate
+            final Cookie[] cookies = request.getCookies();
+
+            Cookie sessionCookie = null;
+            for( Cookie cookie : cookies ) {
+                if( ( "Bearer" ).equals( cookie.getName() ) ) {
+                    sessionCookie = cookie;
+                    break;
+                }
+            }
 
             // Get jwt token and validate
-            final String token = header.split(" ")[1].trim();
+        assert sessionCookie != null;
+        final String token = sessionCookie.getValue();
 
 
         try {
@@ -72,7 +83,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             //todo implement error handling of client error
             UserResponseModel userResponseModel = userServiceClient
                     .getUserByEmail(jwtTokenUtil.getUsernameFromToken(token));
-            
+
             UserDetails userDetails = new UserPrincipalImpl(userResponseModel);
 
 

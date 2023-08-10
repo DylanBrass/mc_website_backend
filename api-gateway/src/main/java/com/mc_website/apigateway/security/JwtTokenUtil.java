@@ -25,6 +25,7 @@ public class JwtTokenUtil implements Serializable {
         try {
             final Claims claims = getClaimsFromToken(token);
             username = claims.getSubject();
+
         } catch (Exception e) {
             username = null;
         }
@@ -90,6 +91,7 @@ public class JwtTokenUtil implements Serializable {
     public Boolean validateToken(String token) {
         final String username = getUsernameFromToken(token);
         if (username == null) return false;
+
         return (!isTokenExpired(token));
     }
 }

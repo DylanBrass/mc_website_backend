@@ -4,11 +4,14 @@ import com.mc_website.apigateway.businesslayer.User.UsersService;
 import com.mc_website.apigateway.datamapperlayer.UserResponseModelLessPasswordMapper;
 import com.mc_website.apigateway.security.JwtTokenUtil;
 import com.mc_website.apigateway.security.UserPrincipalImpl;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -16,6 +19,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.time.Duration;
 
 @RestController
 @RequestMapping("api/v1/users")
@@ -59,7 +64,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserResponseModelPasswordLess> loginUser(@RequestBody UserLoginRequestModel login){
+    public ResponseEntity<UserResponseModelPasswordLess> loginUser(@RequestBody UserLoginRequestModel login, HttpServletResponse response){
         try {
             Authentication authenticate = authenticationManager
                     .authenticate(
@@ -70,11 +75,14 @@ public class UserController {
 
             UserPrincipalImpl user = (UserPrincipalImpl) authenticate.getPrincipal();
 
+            ResponseCookie token = ResponseCookie.from("Bearer", jwtTokenUtil.generateToken(user))
+                    .httpOnly(true)
+                    .secure(true)
+                    .maxAge(Duration.ofHours(1))
+                    .sameSite("Lax").build();
+
+            response.setHeader(HttpHeaders.SET_COOKIE, token.toString());
             return ResponseEntity.ok()
-                    .header(
-                            HttpHeaders.AUTHORIZATION,
-                            jwtTokenUtil.generateToken(user)
-                    )
                     .body(removePwdMapper.responseModelToResponseModelLessPassword(userService.getUserByEmail(user.getUsername())));
         } catch (BadCredentialsException ex) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();

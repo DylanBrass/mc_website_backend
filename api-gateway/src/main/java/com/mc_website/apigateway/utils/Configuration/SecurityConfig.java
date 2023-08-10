@@ -53,7 +53,7 @@ public class SecurityConfig  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers("/api/v1/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users/login").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
                         .requestMatchers("/api/v1/users/forgot_password").permitAll()
                         .requestMatchers("/api/v1/users/reset_password").permitAll()
@@ -69,12 +69,7 @@ public class SecurityConfig  {
         return http.build();
     }
 
-//    @Bean
-//    public WebSecurityCustomizer webSecurityCustomizer() {
-//        return (web) -> web.ignoring().requestMatchers(HttpMethod.POST, "/**")
-//                .requestMatchers(HttpMethod.POST, "/login/**");
-//
-//    }
+
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
     final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -82,7 +77,7 @@ public CorsConfigurationSource corsConfigurationSource() {
     config.setAllowCredentials(true);
     config.addAllowedOrigin("http://localhost:3000");
     config.addAllowedHeader("*");
-    config.addExposedHeader("Authorization");
+    config.addExposedHeader("*");
     config.addAllowedMethod("OPTIONS");
     config.addAllowedMethod("HEAD");
     config.addAllowedMethod("GET");
