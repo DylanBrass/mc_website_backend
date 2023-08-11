@@ -1,6 +1,7 @@
 package com.mc_website.apigateway.utils.Configuration;
 
 import com.mc_website.apigateway.security.JwtTokenFilter;
+import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -59,13 +60,24 @@ public class SecurityConfig  {
                         .requestMatchers("/api/v1/users/reset_password").permitAll()
                         .requestMatchers("/api/v1/users/**").authenticated()
                         .anyRequest().denyAll())
+                .logout(logout -> logout
+                        .logoutUrl("/api/v1/users/logout")
+                        .addLogoutHandler((request, response, auth) -> {
+                            for (Cookie cookie : request.getCookies()) {
+                                String cookieName = cookie.getName();
+                                Cookie cookieToDelete = new Cookie(cookieName, null);
+                                cookieToDelete.setMaxAge(0);
+                                response.addCookie(cookieToDelete);
+                            }
+                        }))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable).cors().configurationSource(corsConfigurationSource());
-        http.addFilterBefore(
+        http.addFilterAfter(
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class
         );
+
         return http.build();
     }
 

@@ -51,11 +51,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
-
-            if(request.getRequestURI().contains("login")){
-                chain.doFilter(request, response);
-                return;
-            }
             // Get authorization header and validate
             final Cookie[] cookies = request.getCookies();
 
