@@ -3,17 +3,12 @@ package com.mc_website.apigateway.security;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mc_website.apigateway.domainclientlayer.User.UserServiceClient;
 import com.mc_website.apigateway.presentation.User.UserResponseModel;
-import io.jsonwebtoken.JwtException;
-import io.netty.handler.codec.http.HttpResponse;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -26,21 +21,19 @@ import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 import java.util.List;
 
-import static com.jayway.jsonpath.internal.Utils.isEmpty;
-
 
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
-    @Autowired
     @Qualifier("handlerExceptionResolver")
-    private HandlerExceptionResolver resolver;
+    private final HandlerExceptionResolver resolver;
     private final JwtTokenUtil jwtTokenUtil;
     private final UserServiceClient userServiceClient;
 
     private final ObjectMapper objectMapper;
 
-    public JwtTokenFilter(JwtTokenUtil jwtTokenUtil,
+    public JwtTokenFilter(HandlerExceptionResolver resolver, JwtTokenUtil jwtTokenUtil,
                           UserServiceClient userServiceClient, ObjectMapper objectMapper) {
+        this.resolver = resolver;
         this.jwtTokenUtil = jwtTokenUtil;
         this.userServiceClient = userServiceClient;
         this.objectMapper = objectMapper;
