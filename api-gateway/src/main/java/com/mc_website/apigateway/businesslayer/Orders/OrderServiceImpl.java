@@ -30,6 +30,12 @@ public class OrderServiceImpl implements OrderService{
 
     @Override
     public OrderResponseModel getOrderById(String orderId) {
+        OrderResponseModel[] allOrders = orderServiceClient.getAllOrders();
+        for(OrderResponseModel orders: allOrders){
+           if(orders.getOrderId().equals(orderId)){
+               return orders;
+           }
+        }
         return null;
     }
 
@@ -38,8 +44,9 @@ public class OrderServiceImpl implements OrderService{
         return orderServiceClient.updateOrder(orderRequestModel,orderId);
     }
 
+    //Deni
     @Override
     public void deleteOrder(String orderId) {
-
+        deleteOrder(orderId);
     }
 }
