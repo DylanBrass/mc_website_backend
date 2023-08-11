@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -51,9 +52,16 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
+
+
             // Get authorization header and validate
             final Cookie[] cookies = request.getCookies();
 
+                if(cookies == null)
+                {
+                    chain.doFilter(request, response);
+                return;
+            }
             Cookie sessionCookie = null;
             for( Cookie cookie : cookies ) {
                 if( ( "Bearer" ).equals( cookie.getName() ) ) {
@@ -61,6 +69,12 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                     break;
                 }
             }
+
+        if(sessionCookie == null)
+        {
+            chain.doFilter(request, response);
+            return;
+        }
 
             // Get jwt token and validate
         assert sessionCookie != null;
@@ -97,7 +111,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
         }
         catch (Exception ex){
-            resolver.resolveException(request, response, null,ex);
+            resolver.resolveException(request, response, null, ex);
 
         }
     }

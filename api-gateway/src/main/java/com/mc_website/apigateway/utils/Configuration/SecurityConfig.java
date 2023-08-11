@@ -54,8 +54,8 @@ public class SecurityConfig  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users/login").anonymous()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users").anonymous()
                         .requestMatchers("/api/v1/users/forgot_password").permitAll()
                         .requestMatchers("/api/v1/users/reset_password").permitAll()
                         .requestMatchers("/api/v1/users/**").authenticated()
@@ -71,9 +71,10 @@ public class SecurityConfig  {
                             }
                         }))
                 .httpBasic(Customizer.withDefaults())
-                .formLogin(Customizer.withDefaults())
+                .formLogin().disable()
+                .exceptionHandling(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable).cors().configurationSource(corsConfigurationSource());
-        http.addFilterAfter(
+        http.addFilterBefore(
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class
         );
@@ -81,6 +82,10 @@ public class SecurityConfig  {
         return http.build();
     }
 
+    @Bean
+    public WebSecurityCustomizer webSecurityCustomizer() {
+        return (web) -> web.ignoring().requestMatchers(HttpMethod.POST,"/api/v1/users/login").requestMatchers(HttpMethod.POST,"/api/v1/users");
+    }
 
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
