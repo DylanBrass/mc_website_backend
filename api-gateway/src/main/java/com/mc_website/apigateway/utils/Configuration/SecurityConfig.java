@@ -1,5 +1,6 @@
 package com.mc_website.apigateway.utils.Configuration;
 
+import com.mc_website.apigateway.security.CustomBasicAuthenticationEntryPoint;
 import com.mc_website.apigateway.security.JwtTokenFilter;
 import jakarta.servlet.http.Cookie;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,10 +39,12 @@ public class SecurityConfig  {
 
     UserDetailsService userDetailService;
     JwtTokenFilter jwtTokenFilter;
+    CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint;
 
-    public SecurityConfig(UserDetailsService userDetailService, JwtTokenFilter jwtTokenFilter) {
+    public SecurityConfig(UserDetailsService userDetailService, JwtTokenFilter jwtTokenFilter, CustomBasicAuthenticationEntryPoint customBasicAuthenticationEntryPoint) {
         this.userDetailService = userDetailService;
         this.jwtTokenFilter = jwtTokenFilter;
+        this.customBasicAuthenticationEntryPoint = customBasicAuthenticationEntryPoint;
     }
 
     @Bean
@@ -54,8 +57,8 @@ public class SecurityConfig  {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests -> authorizeRequests
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users/login").anonymous()
-                        .requestMatchers(HttpMethod.POST,"/api/v1/users").anonymous()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users/login").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/v1/users").permitAll()
                         .requestMatchers("/api/v1/users/forgot_password").permitAll()
                         .requestMatchers("/api/v1/users/reset_password").permitAll()
                         .requestMatchers("/api/v1/users/**").authenticated()
@@ -70,10 +73,11 @@ public class SecurityConfig  {
                                 response.addCookie(cookieToDelete);
                             }
                         }))
-                .httpBasic(Customizer.withDefaults())
-                .formLogin().disable()
-                .exceptionHandling(Customizer.withDefaults())
-                .csrf(AbstractHttpConfigurer::disable).cors().configurationSource(corsConfigurationSource());
+                .httpBasic()
+                .authenticationEntryPoint(customBasicAuthenticationEntryPoint)
+                .and()
+                .csrf().disable()
+                .cors().configurationSource(corsConfigurationSource());
         http.addFilterBefore(
                 jwtTokenFilter,
                 UsernamePasswordAuthenticationFilter.class
@@ -84,7 +88,9 @@ public class SecurityConfig  {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers(HttpMethod.POST,"/api/v1/users/login").requestMatchers(HttpMethod.POST,"/api/v1/users");
+        return (web) -> web.ignoring()
+                .requestMatchers(HttpMethod.POST,"/api/v1/users/login")
+                .requestMatchers(HttpMethod.POST,"/api/v1/users");
     }
 
 @Bean
@@ -93,8 +99,6 @@ public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
     config.addAllowedOrigin("http://localhost:3000");
-    config.addAllowedHeader("*");
-    config.addExposedHeader("*");
     config.addAllowedMethod("OPTIONS");
     config.addAllowedMethod("HEAD");
     config.addAllowedMethod("GET");
