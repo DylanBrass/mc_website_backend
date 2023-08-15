@@ -138,11 +138,11 @@ class UserPersistenceTest {
         assertNotNull(userSaved.getId());
         assertNotNull(userSaved.getUserIdentifier().getUserId());
 
-        assertEquals("Josh", userSaved.getFirstName());
-        assertEquals("Din", userSaved.getLastName());
-        assertEquals("josh.din@gmail.com", userSaved.getEmail());
-        assertEquals("5147890876", userSaved.getPhoneNumber());
-        assertEquals("passWorrrrD$", userSaved.getPassword());
+        assertEquals(firstName, userSaved.getFirstName());
+        assertEquals(lastName, userSaved.getLastName());
+        assertEquals(email, userSaved.getEmail());
+        assertEquals(phoneNumber, userSaved.getPhoneNumber());
+        assertEquals(password, userSaved.getPassword());
     }
 
     @Test
