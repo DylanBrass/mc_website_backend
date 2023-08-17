@@ -254,13 +254,7 @@ class UserServiceClientUnitTest {
 
     @Test
     void createUserReturnsUser() {
-        UserRequestModel userRequestModel = UserRequestModel.builder()
-                .firstName("Johnny")
-                .lastName("Doeyy")
-                .email("johny.doey@example.com")
-                .phoneNumber("5147899876")
-                .password("pasAWord")
-                .build();
+        UserRequestModel userRequestModel = buildUserRequestModel();
 
         UserResponseModel expectedUserResponseModel = new UserResponseModel();
         expectedUserResponseModel.setFirstName(userRequestModel.getFirstName());
@@ -283,13 +277,7 @@ class UserServiceClientUnitTest {
 
     @Test
     void createUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowNotFoundException() {
-        UserRequestModel userRequestModel = UserRequestModel.builder()
-                .firstName("Johnny")
-                .lastName("Doeyy")
-                .email("johny.doey@example.com")
-                .phoneNumber("5147899876")
-                .password("pasAWord")
-                .build();
+        UserRequestModel userRequestModel = buildUserRequestModel();
 
         HttpClientErrorException exception = new HttpClientErrorException(NOT_FOUND, "Not found");
 
@@ -301,13 +289,7 @@ class UserServiceClientUnitTest {
 
     @Test
     void createUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowUnprocessableEntityException() {
-        UserRequestModel userRequestModel = UserRequestModel.builder()
-                .firstName("Johnny")
-                .lastName("Doeyy")
-                .email("johny.doey@example.com")
-                .phoneNumber("5147899876")
-                .password("pasAWord")
-                .build();
+        UserRequestModel userRequestModel = buildUserRequestModel();
 
         HttpClientErrorException exception = new HttpClientErrorException(UNPROCESSABLE_ENTITY, "Unprocessable Entity");
 
@@ -319,13 +301,7 @@ class UserServiceClientUnitTest {
 
     @Test
     void createUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowExistingUserNotFoundException() {
-        UserRequestModel userRequestModel = UserRequestModel.builder()
-                .firstName("Johnny")
-                .lastName("Doeyy")
-                .email("johny.doey@example.com")
-                .phoneNumber("5147899876")
-                .password("pasAWord")
-                .build();
+        UserRequestModel userRequestModel = buildUserRequestModel();
 
         HttpClientErrorException exception = new HttpClientErrorException(BAD_REQUEST, "Existing User Not Found");
 
@@ -338,13 +314,7 @@ class UserServiceClientUnitTest {
     @Test
     void updateUserReturnsUser() {
         String userId = "1234";
-        UserRequestModel userRequestModel = UserRequestModel.builder()
-                .firstName("Mila")
-                .lastName("Kehayova")
-                .email("mk.mk@example.com")
-                .phoneNumber("5147913510")
-                .password("catAndDog")
-                .build();
+        UserRequestModel userRequestModel = buildUserRequestModel();
 
         UserResponseModel expectedUserResponseModel = UserResponseModel.builder()
                 .firstName("Mila")
@@ -365,6 +335,48 @@ class UserServiceClientUnitTest {
     }
 
     @Test
+    void updateUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowNotFoundException() {
+        String userId = "1234";
+        UserRequestModel userRequestModel = buildUserRequestModel();
+
+        UserResponseModel expectedUserResponseModel = UserResponseModel.builder()
+                .firstName("Mila")
+                .lastName("Kehayova")
+                .email("mk.mk@example.com")
+                .phoneNumber("5147913510")
+                .password("catAndDog")
+                .build();
+
+        String updateUrl = USER_SERVICE_BASE_URL + "/" + userId;
+        HttpEntity<UserRequestModel> userRequestModelHttpEntity = new HttpEntity<>(userRequestModel);
+        HttpClientErrorException exception = new HttpClientErrorException(NOT_FOUND, "Not found");
+
+        when(restTemplate.exchange(updateUrl, HttpMethod.PUT, userRequestModelHttpEntity, UserResponseModel.class))
+                .thenThrow(exception);
+        assertThrows(NotFoundException.class, () -> userServiceClient.updateUser(userId, userRequestModel));
+    }
+
+    @Test
+    void updateUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowUnprocessableEntityException() {
+        String userId = "1234";
+        UserRequestModel userRequestModel = buildUserRequestModel();
+        HttpClientErrorException exception = new HttpClientErrorException(UNPROCESSABLE_ENTITY, "Unprocessable Entity");
+        when(restTemplate.exchange(USER_SERVICE_BASE_URL + "/" + userId, HttpMethod.PUT, new HttpEntity<>(userRequestModel), UserResponseModel.class))
+                .thenThrow(exception);
+        assertThrows(InvalidInputException.class, () -> userServiceClient.updateUser(userId, userRequestModel));
+    }
+
+    @Test
+    void updateUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowExistingUserNotFoundException() {
+        String userId = "1234";
+        UserRequestModel userRequestModel = buildUserRequestModel();
+        HttpClientErrorException exception = new HttpClientErrorException(BAD_REQUEST, "Existing User Not Found");
+        when(restTemplate.exchange(USER_SERVICE_BASE_URL + "/" + userId, HttpMethod.PUT, new HttpEntity<>(userRequestModel), UserResponseModel.class))
+                .thenThrow(exception);
+        assertThrows(ExistingUserNotFoundException.class, () -> userServiceClient.updateUser(userId, userRequestModel));
+    }
+
+    @Test
     void deleteGallery(){
         String userId = "1234";
         String deleteUrl = USER_SERVICE_BASE_URL + "/" + userId;
@@ -373,5 +385,38 @@ class UserServiceClientUnitTest {
         Mockito.verify(restTemplate).delete(deleteUrl);
     }
 
+    @Test
+    void deleteUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowNotFoundException() {
+        String userId = "1234";
+        HttpClientErrorException exception = new HttpClientErrorException(NOT_FOUND, "Not found");
+        Mockito.doThrow(exception).when(restTemplate).delete(USER_SERVICE_BASE_URL + "/" + userId);
+        assertThrows(NotFoundException.class, () -> userServiceClient.deleteUser(userId));
+    }
+
+    @Test
+    void deleteUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowUnprocessableEntityException() {
+        String userId = "1234";
+        HttpClientErrorException exception = new HttpClientErrorException(UNPROCESSABLE_ENTITY, "Unprocessable Entity");
+        Mockito.doThrow(exception).when(restTemplate).delete(USER_SERVICE_BASE_URL + "/" + userId);
+        assertThrows(InvalidInputException.class, () -> userServiceClient.deleteUser(userId));
+    }
+
+    @Test
+    void deleteUser_whenRestTemplateThrowsHttpClientErrorException_shouldThrowExistingUserNotFoundException() {
+        String userId = "1234";
+        HttpClientErrorException exception = new HttpClientErrorException(BAD_REQUEST, "Existing User Not Found");
+        Mockito.doThrow(exception).when(restTemplate).delete(USER_SERVICE_BASE_URL + "/" + userId);
+        assertThrows(ExistingUserNotFoundException.class, () -> userServiceClient.deleteUser(userId));
+    }
+
+    private UserRequestModel buildUserRequestModel(){
+        return UserRequestModel.builder()
+                .firstName("Johnny")
+                .lastName("Doeyy")
+                .email("johny.doey@example.com")
+                .phoneNumber("5147899876")
+                .password("pasAWord")
+                .build();
+    }
 
 }
