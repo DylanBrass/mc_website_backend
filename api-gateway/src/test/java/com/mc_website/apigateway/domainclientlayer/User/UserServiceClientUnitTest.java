@@ -339,14 +339,6 @@ class UserServiceClientUnitTest {
         String userId = "1234";
         UserRequestModel userRequestModel = buildUserRequestModel();
 
-        UserResponseModel expectedUserResponseModel = UserResponseModel.builder()
-                .firstName("Mila")
-                .lastName("Kehayova")
-                .email("mk.mk@example.com")
-                .phoneNumber("5147913510")
-                .password("catAndDog")
-                .build();
-
         String updateUrl = USER_SERVICE_BASE_URL + "/" + userId;
         HttpEntity<UserRequestModel> userRequestModelHttpEntity = new HttpEntity<>(userRequestModel);
         HttpClientErrorException exception = new HttpClientErrorException(NOT_FOUND, "Not found");
