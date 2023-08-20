@@ -10,6 +10,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
@@ -30,6 +31,7 @@ import static com.jayway.jsonpath.internal.Utils.isEmpty;
 
 
 @Component
+@Slf4j
 public class JwtTokenFilter extends OncePerRequestFilter {
     @Autowired
     @Qualifier("handlerExceptionResolver")
@@ -52,8 +54,8 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
-
-
+        response.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+            log.warn("Entered Filter");
             // Get authorization header and validate
             final Cookie[] cookies = request.getCookies();
 
@@ -76,8 +78,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             return;
         }
 
-            // Get jwt token and validate
-        assert sessionCookie != null;
         final String token = sessionCookie.getValue();
 
 
@@ -88,8 +88,6 @@ public class JwtTokenFilter extends OncePerRequestFilter {
                 return;
             }
 
-            // Get user identity and set it on the spring security context
-            //todo implement error handling of client error
             UserResponseModel userResponseModel = userServiceClient
                     .getUserByEmail(jwtTokenUtil.getUsernameFromToken(token));
 
@@ -99,8 +97,7 @@ public class JwtTokenFilter extends OncePerRequestFilter {
             UsernamePasswordAuthenticationToken
                     authentication = new UsernamePasswordAuthenticationToken(
                     userDetails, null,
-                    userDetails == null ?
-                            List.of() : userDetails.getAuthorities()
+                    userDetails.getAuthorities()
             );
 
             authentication.setDetails(

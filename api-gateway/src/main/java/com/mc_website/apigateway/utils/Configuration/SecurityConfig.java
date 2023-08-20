@@ -3,6 +3,7 @@ package com.mc_website.apigateway.utils.Configuration;
 import com.mc_website.apigateway.security.CustomBasicAuthenticationEntryPoint;
 import com.mc_website.apigateway.security.JwtTokenFilter;
 import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -65,12 +66,15 @@ public class SecurityConfig  {
                         .anyRequest().denyAll())
                 .logout(logout -> logout
                         .logoutUrl("/api/v1/users/logout")
+                        .logoutSuccessHandler((httpServletRequest, httpServletResponse, authentication) -> {
+                            httpServletResponse.setStatus(HttpServletResponse.SC_NO_CONTENT);
+                        })
                         .addLogoutHandler((request, response, auth) -> {
                             for (Cookie cookie : request.getCookies()) {
-                                String cookieName = cookie.getName();
-                                Cookie cookieToDelete = new Cookie(cookieName, null);
-                                cookieToDelete.setMaxAge(0);
-                                response.addCookie(cookieToDelete);
+                                    String cookieName = cookie.getName();
+                                    Cookie cookieToDelete = new Cookie(cookieName, null);
+                                    cookieToDelete.setMaxAge(0);
+                                    response.addCookie(cookieToDelete);
                             }
                         }))
                 .httpBasic()
@@ -86,12 +90,12 @@ public class SecurityConfig  {
         return http.build();
     }
 
-    @Bean
-    public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring()
-                .requestMatchers(HttpMethod.POST,"/api/v1/users/login")
-                .requestMatchers(HttpMethod.POST,"/api/v1/users");
-    }
+//    @Bean
+//    public WebSecurityCustomizer webSecurityCustomizer() {
+//        return (web) -> web.ignoring()
+//                .requestMatchers(HttpMethod.POST,"/api/v1/users/login")
+//                .requestMatchers(HttpMethod.POST,"/api/v1/users");
+//    }
 
 @Bean
 public CorsConfigurationSource corsConfigurationSource() {
@@ -99,13 +103,11 @@ public CorsConfigurationSource corsConfigurationSource() {
     final CorsConfiguration config = new CorsConfiguration();
     config.setAllowCredentials(true);
     config.addAllowedOrigin("http://localhost:3000");
-    config.addAllowedMethod("OPTIONS");
-    config.addAllowedMethod("HEAD");
     config.addAllowedMethod("GET");
     config.addAllowedMethod("PUT");
     config.addAllowedMethod("POST");
     config.addAllowedMethod("DELETE");
-    config.addAllowedMethod("PATCH");
+    config.addAllowedHeader("*");
     source.registerCorsConfiguration("/**", config);
     return source;
 }
