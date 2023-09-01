@@ -3,11 +3,14 @@ package com.mc_websiteusersservice.presentationlayer;
 import com.mc_websiteusersservice.businesslayer.UserService;
 import com.mc_websiteusersservice.datalayer.ResetPasswordToken;
 import com.mc_websiteusersservice.datalayer.ResetPasswordTokenRepository;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.oauth2.resource.OAuth2ResourceServerProperties;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.jwt.JwtAlgorithms;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -19,10 +22,7 @@ import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.io.UnsupportedEncodingException;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.UUID;
+import java.util.*;
 
 @Controller
 @RequestMapping("api/v1/users")
@@ -107,12 +107,24 @@ public class UserController {
     }
 
         try {
+            log.info("In the controller, before passing to the service impl, token: " + token + " email: " + email);
+
+            token = BCrypt.hashpw(token, BCrypt.gensalt(10));
             userService.updateResetPasswordToken(token, email);
             ResetPasswordToken resetPasswordToken = resetPasswordTokenRepository.findResetPasswordTokenByToken(token);
 
+            Map<String, Object> claims = new HashMap<>();
+            claims.put("Token", resetPasswordToken.getToken());
+            claims.put("Expire date", resetPasswordToken.getExpiryDate());
+            claims.put("User", resetPasswordToken.getUserIdentifier().getUserId());
 
+            String jwToken = Jwts.builder()
+            .setClaims(claims)
+                    .setExpiration(resetPasswordToken.getExpiryDate())
+                    .signWith(SignatureAlgorithm.HS512, "PasswordResetSecret" )
+                    .compact();
 
-            String resetPasswordLink =  userResetPwdRequestModel.getUrl()+ "/api/v1/users/reset_password?token=" + token;
+            String resetPasswordLink =  userResetPwdRequestModel.getUrl()+ "/api/v1/users/reset_password?token=" + jwToken;
             sendEmail(email, resetPasswordLink);
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
         } catch (Exception ex) {
@@ -160,8 +172,15 @@ public class UserController {
         String token = resetRequest.getToken();
         String password = resetRequest.getPassword();
 
+        Claims claims = Jwts.parser()
+                .setSigningKey( "PasswordResetSecret")
+                .parseClaimsJws(token)
+                .getBody();
+
+        String tokenStr = claims.get("token").toString();
+        log.info("JWT token payload: " + claims);
         //Hash token
-        UserResponseModel userResponseModel = userService.getByResetPasswordToken(token);
+        UserResponseModel userResponseModel = userService.getByResetPasswordToken(tokenStr);
 
 
 

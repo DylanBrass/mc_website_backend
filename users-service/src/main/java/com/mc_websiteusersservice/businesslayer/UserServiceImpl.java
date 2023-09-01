@@ -10,6 +10,7 @@ import com.mc_websiteusersservice.presentationlayer.UserRequestModel;
 import com.mc_websiteusersservice.presentationlayer.UserResponseModel;
 import com.mc_websiteusersservice.utils.exceptions.ExistingUserNotFoundException;
 import com.mc_websiteusersservice.utils.exceptions.UserAlreadyExistsException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,6 +21,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Calendar;
 import java.util.List;
 
+@Slf4j
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
@@ -88,7 +90,7 @@ public class UserServiceImpl implements UserService {
         if(userWithPassword == null)
             throw new ExistingUserNotFoundException("User with email " + email + " does not exist.");
 
-        String encodedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
+        String encodedPassword = BCrypt.hashpw(password, BCrypt.gensalt(10));
 
             // Get complete hashed password in hex format
             userWithPassword.setPassword(encodedPassword);
@@ -119,11 +121,13 @@ public class UserServiceImpl implements UserService {
             ResetPasswordToken resetPasswordToken = new ResetPasswordToken(user.getUserIdentifier().getUserId(),token);
             tokenRepository.save(resetPasswordToken);
         } else {
+            throw new IllegalArgumentException("Could not find any customer with the email " + email);
         }
     }
 
     @Override
     public UserResponseModel getByResetPasswordToken(String token) {
+        token = BCrypt.hashpw(token, BCrypt.gensalt(10));
         ResetPasswordToken resetPasswordToken = tokenRepository.findResetPasswordTokenByToken(token);
         final Calendar cal = Calendar.getInstance();
 
@@ -138,6 +142,7 @@ public class UserServiceImpl implements UserService {
 
             final Calendar cal = Calendar.getInstance();
 
+            token = BCrypt.hashpw(token, BCrypt.gensalt(10));
             ResetPasswordToken resetPasswordToken = tokenRepository.findResetPasswordTokenByToken(token);
             if(resetPasswordToken.getExpiryDate().before(cal.getTime())){
                 throw new IllegalArgumentException("Token expired");

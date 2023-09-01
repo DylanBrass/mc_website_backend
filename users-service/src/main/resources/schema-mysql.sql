@@ -12,7 +12,7 @@ USE `users-db`;
 
 create table if not exists reset_password_token (
                                          id INTEGER NOT NULL AUTO_INCREMENT PRIMARY KEY,
-                                         token VARCHAR(36),
+                                         token VARCHAR(100),
                                          user_id VARCHAR(36) UNIQUE,
                                          expiry_date DATETIME
 );
