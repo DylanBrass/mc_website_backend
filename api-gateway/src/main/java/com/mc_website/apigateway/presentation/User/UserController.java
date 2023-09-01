@@ -114,10 +114,7 @@ public class UserController {
     public String showResetPasswordForm(@Param(value = "token") String token) throws IllegalAccessException {
         if(token == null)
             throw new IllegalAccessException("An error as occured");
-
-
         return userService.resetPasswordPage(token);
-
     }
 
     @PostMapping("/reset_password")

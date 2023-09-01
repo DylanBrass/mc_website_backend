@@ -10,7 +10,7 @@ import java.util.Date;
 @Table(name="reset_password_token")
 @Data
 public class ResetPasswordToken {
-    private static final int EXPIRATION = 5;
+    private static final int EXPIRATION = 15;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,7 @@ public class ResetPasswordToken {
         this.token = token;
         Calendar date = Calendar.getInstance();
         long timeInSecs = date.getTimeInMillis();
-        Date expiryDate = new Date(timeInSecs + (15 * 60 * 1000));
+        Date expiryDate = new Date(timeInSecs + (EXPIRATION * 60 * 1000));
         this.expiryDate = expiryDate;
     }
 

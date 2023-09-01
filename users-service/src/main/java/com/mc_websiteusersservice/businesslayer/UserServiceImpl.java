@@ -10,6 +10,9 @@ import com.mc_websiteusersservice.presentationlayer.UserRequestModel;
 import com.mc_websiteusersservice.presentationlayer.UserResponseModel;
 import com.mc_websiteusersservice.utils.exceptions.ExistingUserNotFoundException;
 import com.mc_websiteusersservice.utils.exceptions.UserAlreadyExistsException;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.security.MessageDigest;
@@ -84,30 +87,12 @@ public class UserServiceImpl implements UserService {
         User userWithPassword = userRepository.findByEmail(email);
         if(userWithPassword == null)
             throw new ExistingUserNotFoundException("User with email " + email + " does not exist.");
-        // Encrypt the password here
-        try
-        {
-            // Create MessageDigest instance for MD5
-            MessageDigest md = MessageDigest.getInstance("MD5");
 
-            // Add password bytes to digest
-            md.update(password.getBytes());
-
-            // Get the hash's bytes
-            byte[] bytes = md.digest();
-
-            // This bytes[] has bytes in decimal format. Convert it to hexadecimal format
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
+        String encodedPassword = BCrypt.hashpw(password, BCrypt.gensalt(12));
 
             // Get complete hashed password in hex format
-            userWithPassword.setPassword(sb.toString());
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            return null;
-        }
+            userWithPassword.setPassword(encodedPassword);
+
 
         // Check if the user exists
         if(userRepository.findByEmailAndPassword(email, userWithPassword.getPassword()) == null)
@@ -150,34 +135,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updatePassword(String newPassword, String token) {
-        try
-        {
+
             final Calendar cal = Calendar.getInstance();
 
             ResetPasswordToken resetPasswordToken = tokenRepository.findResetPasswordTokenByToken(token);
             if(resetPasswordToken.getExpiryDate().before(cal.getTime())){
                 throw new IllegalArgumentException("Token expired");
             }
-            MessageDigest md = MessageDigest.getInstance("MD5");
 
-            md.update(newPassword.getBytes());
-
-            byte[] bytes = md.digest();
-
-            StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-            }
-
-            String encodedPassword = sb.toString();
+            String encodedPassword = BCrypt.hashpw(newPassword, BCrypt.gensalt(10));
             User user = userRepository.findUserByUserIdentifier_UserId(resetPasswordToken.getUserIdentifier().getUserId());
             user.setPassword(encodedPassword);
 
             userRepository.save(user);
             tokenRepository.delete(resetPasswordToken);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
+
 
     }
 

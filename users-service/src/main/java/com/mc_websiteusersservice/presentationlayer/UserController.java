@@ -1,6 +1,8 @@
 package com.mc_websiteusersservice.presentationlayer;
 
 import com.mc_websiteusersservice.businesslayer.UserService;
+import com.mc_websiteusersservice.datalayer.ResetPasswordToken;
+import com.mc_websiteusersservice.datalayer.ResetPasswordTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +28,16 @@ import java.util.UUID;
 @Slf4j
 public class UserController {
 
+    ResetPasswordTokenRepository resetPasswordTokenRepository;
     UserService userService;
     private final String username;
     private final String password;
     Session session;
 
-    public UserController(@Value("${spring.mail.username}") String username, @Value("${spring.mail.password}") String password, UserService userService) {
+    public UserController(@Value("${spring.mail.username}") String username, @Value("${spring.mail.password}") String password, UserService userService,ResetPasswordTokenRepository resetPasswordTokenRepository) {
         this.username = username;
         this.password = password;
-
+        this.resetPasswordTokenRepository = resetPasswordTokenRepository;
         this.userService = userService;
         Properties prop = new Properties();
         prop.put("mail.smtp.host", "smtp.gmail.com");
@@ -82,13 +85,15 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
+    //CAN BE DONE IN FRONT END
     @GetMapping("/forgot_password")
     public String showForgotPasswordForm() {
-            return "forgot_password_form";
+        return "forgot_password_form";
     }
 
     @PostMapping("/forgot_password")
     public String processForgotPassword(@RequestBody UserResetPwdRequestModel userResetPwdRequestModel, Model model) {
+        //PUT IN A SERVICE
         String email = userResetPwdRequestModel.getEmail();
         String token = UUID.randomUUID().toString();
         try {
@@ -101,15 +106,18 @@ public class UserController {
 
         try {
             userService.updateResetPasswordToken(token, email);
+            ResetPasswordToken resetPasswordToken = resetPasswordTokenRepository.findResetPasswordTokenByToken(token);
+
+            
+
             String resetPasswordLink =  userResetPwdRequestModel.getUrl()+ "/api/v1/users/reset_password?token=" + token;
             sendEmail(email, resetPasswordLink);
             model.addAttribute("message", "We have sent a reset password link to your email. Please check.");
-
         } catch (Exception ex) {
             model.addAttribute("error", ex.getMessage());
         }
-
         return "forgot_password_form";
+
     }
 
     public void sendEmail(String recipientEmail, String link) throws MessagingException, UnsupportedEncodingException, InterruptedException {
@@ -120,6 +128,7 @@ public class UserController {
                 InternetAddress.parse(recipientEmail) //grif2004@hotmail.com || kehayova.mila@gmail.com
         );
         message.setSubject("Change Password");
+
         message.setText("Test : " + link);
 
         Transport.send(message);
@@ -128,7 +137,7 @@ public class UserController {
 
     @GetMapping("/reset_password")
     public String showResetPasswordForm(@RequestParam Map<String, String> querryParams, Model model) {
-
+        //Hash token
         String token = querryParams.get("token");
 
 
@@ -148,7 +157,13 @@ public class UserController {
     public String processResetPassword(@RequestBody UserResetPwdWithTokenRequestModel resetRequest, Model model) {
         String token = resetRequest.getToken();
         String password = resetRequest.getPassword();
+
+        //Hash token
         UserResponseModel userResponseModel = userService.getByResetPasswordToken(token);
+
+
+
+
         model.addAttribute("title", "Reset your password");
 
         if (userResponseModel == null) {

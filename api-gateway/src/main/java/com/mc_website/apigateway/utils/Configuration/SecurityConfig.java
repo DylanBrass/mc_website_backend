@@ -75,6 +75,7 @@ public class SecurityConfig  {
                                     Cookie cookieToDelete = new Cookie(cookieName, null);
                                     cookieToDelete.setMaxAge(0);
                                     response.addCookie(cookieToDelete);
+
                             }
                         }))
                 .httpBasic()

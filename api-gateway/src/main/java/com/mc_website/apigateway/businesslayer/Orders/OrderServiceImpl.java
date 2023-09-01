@@ -44,7 +44,6 @@ public class OrderServiceImpl implements OrderService{
         return orderServiceClient.updateOrder(orderRequestModel,orderId);
     }
 
-    //Deni
     @Override
     public void deleteOrder(String orderId) {
         deleteOrder(orderId);

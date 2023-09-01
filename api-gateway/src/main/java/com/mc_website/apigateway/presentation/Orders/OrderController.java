@@ -29,6 +29,7 @@ public class OrderController {
     public ResponseEntity<OrderResponseModel[]> getAllOrdersForUser(@PathVariable String userId){
         return ResponseEntity.ok(orderService.getAllOrdersForUser(userId));
     }
+
     @DeleteMapping("/orders/{orderId}")
     public ResponseEntity<Void> deleteOrder(@PathVariable String orderId){
         orderService.deleteOrder(orderId);
