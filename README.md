@@ -163,7 +163,7 @@ This is an API, and you can store and retrive data, so this is a complete list o
 /api/v1/users/{userId}
 /api/v1/users/{userId}
 
-
+To use these endpoints, you simply run the project with docker-compose and make a request (with postman or something similar) and then do a request at localhost:8080, and then you add the endpoint you want.
 
 <a name="difficulties"></a>
 ## Difficulties
